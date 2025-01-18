@@ -6,4 +6,5 @@
         }
     ],
     "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.cargo.buildScripts.enable": true
 }
