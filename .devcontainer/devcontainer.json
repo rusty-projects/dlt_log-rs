@@ -7,5 +7,7 @@
             "profile": "default",
             "targets": ""
         }
-    }
+    },
+    "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
+    "postStartCommand": "./.devcontainer/postStartCommand.sh"
 }
