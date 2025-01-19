@@ -1,23 +1,60 @@
 #![allow(non_snake_case)]
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+#![allow(unused_attributes)]
+include!(concat!(env!("OUT_DIR"), "/libdlt_bindings.rs"));
 
-pub fn try_ffi() {
-    let ctx = DltContext {
-        contextID: ['a' as i8, 'b' as i8, 'c' as i8, 'd' as i8],
-        log_level_pos: 0,
-        log_level_ptr: std::ptr::null_mut(),
-        trace_status_ptr: std::ptr::null_mut(),
-        mcnt: 0,
-    };
-    println!("context: {:?}", ctx);
+use std::ffi::{CString, NulError};
+
+use log::{Level, LevelFilter, Metadata, Record, SetLoggerError};
+
+#[derive(Debug)]
+pub enum InitializeError {
+    ConversionError(NulError),
+    LoggerError(SetLoggerError),
+    DltLibraryError(DltReturnValue),
+}
+
+impl From<NulError> for InitializeError {
+    fn from(err: NulError) -> InitializeError {
+        InitializeError::ConversionError(err)
+    }
+}
+
+impl From<SetLoggerError> for InitializeError {
+    fn from(err: SetLoggerError) -> InitializeError {
+        InitializeError::LoggerError(err)
+    }
+}
+
+pub fn init(appId: &str, description: &str) -> Result<(), InitializeError> {
+    let dlt_logger = DltLogger {};
+    let c_appId = CString::new(appId)?;
+    let c_descriptionId = CString::new(description)?;
+    let dltReturnValue = unsafe { dlt_register_app(c_appId.as_ptr(), c_descriptionId.as_ptr()) };
+    if dltReturnValue != DLT_RETURN_OK {
+        return Err(InitializeError::DltLibraryError(dltReturnValue));
+    }
+    log::set_boxed_logger(Box::new(dlt_logger))?;
+    log::set_max_level(LevelFilter::Info);
+    Ok(())
+}
+
+struct DltLogger {}
+
+impl log::Log for DltLogger {
+    fn enabled(&self, metadata: &Metadata) -> bool {
+        metadata.level() <= Level::Info
+    }
+
+    fn log(&self, record: &Record) {
+        if self.enabled(record.metadata()) {
+            println!("{} - {}", record.level(), record.args());
+        }
+    }
+
+    fn flush(&self) {}
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    #[test]
-    fn try_ffi_test() {
-        try_ffi();
-    }
+    //use super::*;
 }

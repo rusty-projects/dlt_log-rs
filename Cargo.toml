@@ -7,3 +7,4 @@ edition = "2021"
 bindgen = "0.71.1"
 
 [dependencies]
+log = { version = "0.4", features = ["std"] }
