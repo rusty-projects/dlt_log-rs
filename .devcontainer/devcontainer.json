@@ -9,5 +9,12 @@
         }
     },
     "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
-    "postStartCommand": "./.devcontainer/postStartCommand.sh"
+    "postStartCommand": "./.devcontainer/postStartCommand.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack"
+            ]
+        }
+    }
 }
