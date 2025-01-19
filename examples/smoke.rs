@@ -3,7 +3,7 @@ extern crate log;
 extern crate dlt_log;
 
 fn main() {
-    dlt_log::init("MYAPP", "My application").unwrap();
+    dlt_log::init("TEST", "Rust tests", "EXPL", "Smoke test example").unwrap();
 
     trace!("Initialized Rust");
     debug!("Address is {:p}", main as *const ());

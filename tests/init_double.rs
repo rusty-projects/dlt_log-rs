@@ -2,6 +2,6 @@ use dlt_log::init;
 
 #[test]
 fn init_double() {
-    assert!(init("APP4", "Application").is_ok());
-    assert!(init("APP4", "Application").is_err());
+    assert!(init("TEST", "Rust tests", "INT", "Integration tests").is_ok());
+    assert!(init("TEST", "Rust tests", "INT", "Integration tests").is_err());
 }
