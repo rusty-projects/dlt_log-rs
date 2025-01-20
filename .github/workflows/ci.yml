@@ -9,19 +9,31 @@ on:
       - main
 
 jobs:
-  build:
+
+  devcontainer:
     runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+  
+    - name: Update devcontainer
+      uses: devcontainers/ci@v0.3
+      with:
+        imageName: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
+        cacheFrom: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
+        push: always  
+
+  build:
+    needs: devcontainer
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
     - name: Build and test
-      uses: devcontainers/ci@v0.3
-      with:
-        imageName: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-devcontainer
-        cacheFrom: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-devcontainer
-        push: always  
-        runCmd: ./scripts/ci.sh
+      run: ./scripts/ci.sh
 
     - name: Setup LCOV
       uses: hrishikesh-kadam/setup-lcov@v1.1.0
