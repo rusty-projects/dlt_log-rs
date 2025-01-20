@@ -17,4 +17,4 @@ dlt-daemon -d
 cargo test
 
 # code coverage
-cargo llvm-cov
+cargo llvm-cov --lcov --output-path lcov.info
