@@ -19,15 +19,15 @@ jobs:
     - name: Update devcontainer
       uses: devcontainers/ci@v0.3
       with:
-        imageName: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
-        cacheFrom: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
+        imageName: ghcr.io/${{ github.repository }}/${{ github.ref	}}/devcontainer
+        cacheFrom: ghcr.io/${{ github.repository }}/${{ github.ref	}}/devcontainer
         push: always  
 
   build:
     needs: devcontainer
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/${{ github.ref	}}/devcontainer
+      image: ghcr.io/${{ github.repository }}/${{ github.ref	}}/devcontainer
     steps:
     - name: Checkout
       uses: actions/checkout@v4
