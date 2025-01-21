@@ -6,13 +6,21 @@ The DLT system is a flexible and scalable logging framework that is widely used 
 
 ![Example logs in DLT viewer](https://raw.githubusercontent.com/rusty-projects/dlt_log-rs/main/doc/dlt-viewer-example.png)
 
-## Requirements
+## Requirements and installation
 
 You need to have `libclang-dev` installed on your system to run the binding generation and `libdlt-dev` to link against the DLT library.
 On Ubuntu, you can install that with the following command:
 
 ```bash
 sudo apt-get install libclang-dev libdlt-dev
+```
+
+Then you can add the `dlt_log` crate to your `Cargo.toml`:
+
+```toml
+[dependencies]
+log = { version = "0.4", features = ["std"] }
+dlt_log = "0.1"
 ```
 
 ## Usage
