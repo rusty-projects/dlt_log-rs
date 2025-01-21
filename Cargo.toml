@@ -1,7 +1,12 @@
 [package]
 name = "dlt_log"
 version = "0.1.0"
+description = "Log crate adapter for integrating with the Diagnostic Log and Trace (DLT) system"
+license-file = "LICENSE"
 edition = "2021"
+repository = "https://github.com/rusty-projects/dlt_log-rs"
+keywords = ["dlt", "log", "logging", "adapter"]
+categories = ["development-tools::debugging"]
 
 [build-dependencies]
 bindgen = "0.71.1"

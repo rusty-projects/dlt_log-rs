@@ -1,10 +1,10 @@
-# `log` crate adaptor for DLT
+# `log` crate adapter for DLT
 
-`dlt_log` is a Rust library for integrating with the Diagnostic Log and Trace (DLT) system. It provides functionality to register applications and contexts with the DLT daemon and implements a logger that sends log messages to the DLT system. The library is designed to be used with the standard `log` crate, which provides a flexible logging API for Rust applications.
+`dlt_log` is a `log` crate adapter for integrating with the Diagnostic Log and Trace (DLT) system. It provides functionality to register applications and contexts with the DLT daemon and implements a logger that sends log messages to the DLT system. The library is designed to be used with the standard `log` crate, which provides a flexible logging API for Rust applications.
 
 The DLT system is a flexible and scalable logging framework that is widely used in the automotive industry for logging and tracing in embedded systems. It provides features such as log level filtering, message formatting, and log message buffering. For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
-#![Example logs in DLT viewer](https://github.com/rusty-projects/dlt_log-rs/blob/main/doc/dlt-viewer-example.png)
+![Example logs in DLT viewer](https://github.com/rusty-projects/dlt_log-rs/blob/main/doc/dlt-viewer-example.png)
 
 ## Usage
 
@@ -22,7 +22,7 @@ fn main() {
 
 The log levels and logging backend are configured by the DLT system. For configuration, follow the [DLT documentation](https://github.com/COVESA/dlt-daemon/blob/master/doc/dlt_for_developers.md).
 
-For example to enable all log levels, set the `DLT_INITIAL_LOG_LEVEL` environment variable to `::6`.
+For example, to enable all log levels, set the `DLT_INITIAL_LOG_LEVEL` environment variable to `::6`.
 
 ```bash
 DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple
