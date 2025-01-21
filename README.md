@@ -1,6 +1,6 @@
 # `log` crate adapter for DLT
 
-`dlt_log` is a Rust library for integrating with the Diagnostic Log and Trace (DLT) system. It provides functionality to register applications and contexts with the DLT daemon and implements a logger that sends log messages to the DLT system. The library is designed to be used with the standard `log` crate, which provides a flexible logging API for Rust applications.
+`dlt_log` is a `log` crate adapter for integrating with the Diagnostic Log and Trace (DLT) system. It provides functionality to register applications and contexts with the DLT daemon and implements a logger that sends log messages to the DLT system. The library is designed to be used with the standard `log` crate, which provides a flexible logging API for Rust applications.
 
 The DLT system is a flexible and scalable logging framework that is widely used in the automotive industry for logging and tracing in embedded systems. It provides features such as log level filtering, message formatting, and log message buffering. For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
