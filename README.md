@@ -4,7 +4,7 @@
 
 The DLT system is a flexible and scalable logging framework that is widely used in the automotive industry for logging and tracing in embedded systems. It provides features such as log level filtering, message formatting, and log message buffering. For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
-![Example logs in DLT viewer](https://github.com/rusty-projects/dlt_log-rs/blob/main/doc/dlt-viewer-example.png)
+![Example logs in DLT viewer](https://raw.githubusercontent.com/rusty-projects/dlt_log-rs/main/doc/dlt-viewer-example.png)
 
 ## Usage
 
