@@ -6,6 +6,15 @@ The DLT system is a flexible and scalable logging framework that is widely used 
 
 ![Example logs in DLT viewer](https://raw.githubusercontent.com/rusty-projects/dlt_log-rs/main/doc/dlt-viewer-example.png)
 
+## Requirements
+
+You need to have `libclang-dev` installed on your system to run the binding generation and `libdlt-dev` to link against the DLT library.
+On Ubuntu, you can install that with the following command:
+
+```bash
+sudo apt-get install libclang-dev libdlt-dev
+```
+
 ## Usage
 
 To use this library, you need to initialize it with your application and context information. This will register your application and context with the DLT daemon and set up the logger.
