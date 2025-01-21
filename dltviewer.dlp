@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dltproject>
+    <settings>
+        <table>
+            <fontSize>8</fontSize>
+            <sectionSize>16</sectionSize>
+            <fontName>Segoe UI,8,-1,5,50,0,0,0,0,0</fontName>
+            <automaticTimeSettings>1</automaticTimeSettings>
+            <automaticTimezoneFromDlt>1</automaticTimezoneFromDlt>
+            <utcOffset>3600</utcOffset>
+            <dst>1</dst>
+            <showIndex>1</showIndex>
+            <showTime>1</showTime>
+            <showTimestamp>1</showTimestamp>
+            <showCount>0</showCount>
+            <showEcuId>1</showEcuId>
+            <showApId>1</showApId>
+            <showApIdDesc>0</showApIdDesc>
+            <showCtId>1</showCtId>
+            <showCtIdDesc>0</showCtIdDesc>
+            <showType>0</showType>
+            <showSubtype>1</showSubtype>
+            <showMode>0</showMode>
+            <showNoar>0</showNoar>
+            <showPayload>1</showPayload>
+            <showArguments>0</showArguments>
+            <showMsgId>0</showMsgId>
+            <markercolor>#aaaaaa</markercolor>
+        </table>
+        <other>
+            <autoConnect>1</autoConnect>
+            <autoScroll>0</autoScroll>
+            <autoMarkFatalError>0</autoMarkFatalError>
+            <autoMarkWarn>0</autoMarkWarn>
+            <autoMarkMarker>1</autoMarkMarker>
+            <updateContextLoadingFile>1</updateContextLoadingFile>
+            <updateContextsUnregister>0</updateContextsUnregister>
+            <loggingOnlyMode>0</loggingOnlyMode>
+            <splitlogfile>0</splitlogfile>
+            <fmaxFileSizeMB>100</fmaxFileSizeMB>
+            <appendDateTime>0</appendDateTime>
+            <msgIdFormat>[%08u]</msgIdFormat>
+        </other>
+    </settings>
+    <ecu>
+        <id>ECU</id>
+        <description>A new ECU</description>
+        <interface>0</interface>
+        <hostname>172.20.0.2</hostname>
+        <mcinterface></mcinterface>
+        <mcIP>&lt;None&gt;</mcIP>
+        <ipport>3490</ipport>
+        <udpport>3490</udpport>
+        <port></port>
+        <baudrate>115200</baudrate>
+        <sendserialheadertcp>0</sendserialheadertcp>
+        <sendserialheaderserial>1</sendserialheaderserial>
+        <synctoserialheadertcp>0</synctoserialheadertcp>
+        <synctoserialheaderserial>1</synctoserialheaderserial>
+        <loglevel>4</loglevel>
+        <tracestatus>0</tracestatus>
+        <verbosemode>1</verbosemode>
+        <timingpackets>0</timingpackets>
+        <sendgetloginfo>0</sendgetloginfo>
+        <sendDefaultLogLevel>1</sendDefaultLogLevel>
+        <sendGetSoftwareVersion>1</sendGetSoftwareVersion>
+        <updatedata>1</updatedata>
+        <multicast>0</multicast>
+        <autoReconnect>1</autoReconnect>
+        <autoReconnectTimeout>3</autoReconnectTimeout>
+        <writeDLTv2StorageHeader>0</writeDLTv2StorageHeader>
+        <application>
+            <id>TEST</id>
+            <description>Rust tests</description>
+            <context>
+                <id>EXPL</id>
+                <description>Smoke test example</description>
+                <loglevel>-1</loglevel>
+                <tracestatus>-1</tracestatus>
+            </context>
+        </application>
+    </ecu>
+    <pfilter>
+        <type>1</type>
+        <name>No control messages</name>
+        <ecuid></ecuid>
+        <applicationid></applicationid>
+        <contextid></contextid>
+        <headertext></headertext>
+        <payloadtext></payloadtext>
+        <regex_search></regex_search>
+        <regex_replace></regex_replace>
+        <messageIdMin>0</messageIdMin>
+        <messageIdMax>0</messageIdMax>
+        <enableregexp_Appid>0</enableregexp_Appid>
+        <enableregexp_Context>0</enableregexp_Context>
+        <enableregexp_Header>0</enableregexp_Header>
+        <enableregexp_Payload>0</enableregexp_Payload>
+        <ignoreCase_Header>0</ignoreCase_Header>
+        <ignoreCase_Payload>0</ignoreCase_Payload>
+        <enablefilter>1</enablefilter>
+        <enableecuid>0</enableecuid>
+        <enableapplicationid>0</enableapplicationid>
+        <enablecontextid>0</enablecontextid>
+        <enableheadertext>0</enableheadertext>
+        <enablepayloadtext>0</enablepayloadtext>
+        <enablectrlmsgs>1</enablectrlmsgs>
+        <enableLogLevelMin>0</enableLogLevelMin>
+        <enableLogLevelMax>0</enableLogLevelMax>
+        <enableMarker>0</enableMarker>
+        <enableMessageId>0</enableMessageId>
+        <enableRegexSearchReplace>0</enableRegexSearchReplace>
+        <filterColour>#ffffff</filterColour>
+        <logLevelMax>0</logLevelMax>
+        <logLevelMin>0</logLevelMin>
+    </pfilter>
+    <pfilter>
+        <type>1</type>
+        <name>No client connection</name>
+        <ecuid>ECU</ecuid>
+        <applicationid>TEST</applicationid>
+        <contextid></contextid>
+        <headertext></headertext>
+        <payloadtext>client connection</payloadtext>
+        <regex_search></regex_search>
+        <regex_replace></regex_replace>
+        <messageIdMin>0</messageIdMin>
+        <messageIdMax>0</messageIdMax>
+        <enableregexp_Appid>0</enableregexp_Appid>
+        <enableregexp_Context>0</enableregexp_Context>
+        <enableregexp_Header>0</enableregexp_Header>
+        <enableregexp_Payload>0</enableregexp_Payload>
+        <ignoreCase_Header>0</ignoreCase_Header>
+        <ignoreCase_Payload>1</ignoreCase_Payload>
+        <enablefilter>1</enablefilter>
+        <enableecuid>0</enableecuid>
+        <enableapplicationid>0</enableapplicationid>
+        <enablecontextid>0</enablecontextid>
+        <enableheadertext>0</enableheadertext>
+        <enablepayloadtext>1</enablepayloadtext>
+        <enablectrlmsgs>0</enablectrlmsgs>
+        <enableLogLevelMin>0</enableLogLevelMin>
+        <enableLogLevelMax>0</enableLogLevelMax>
+        <enableMarker>0</enableMarker>
+        <enableMessageId>0</enableMessageId>
+        <enableRegexSearchReplace>0</enableRegexSearchReplace>
+        <filterColour>#ffffff</filterColour>
+        <logLevelMax>0</logLevelMax>
+        <logLevelMin>0</logLevelMin>
+    </pfilter>
+    <plugin>
+        <name>DLT DBus Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>0</prio>
+    </plugin>
+    <plugin>
+        <name>DLT Logstorage Config Creator Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>1</prio>
+    </plugin>
+    <plugin>
+        <name>DLT Segmentation Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>2</prio>
+    </plugin>
+    <plugin>
+        <name>DLT System Viewer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>3</prio>
+    </plugin>
+    <plugin>
+        <name>DLT Test Robot Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>4</prio>
+    </plugin>
+    <plugin>
+        <name>DLT Viewer Plugin</name>
+        <filename></filename>
+        <mode>2</mode>
+        <type>0</type>
+        <prio>5</prio>
+    </plugin>
+    <plugin>
+        <name>Dummy Command Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>6</prio>
+    </plugin>
+    <plugin>
+        <name>Dummy Control Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>7</prio>
+    </plugin>
+    <plugin>
+        <name>Dummy Decoder Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>8</prio>
+    </plugin>
+    <plugin>
+        <name>Dummy Viewer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>9</prio>
+    </plugin>
+    <plugin>
+        <name>Filetransfer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>10</prio>
+    </plugin>
+    <plugin>
+        <name>Non Verbose Mode Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+        <prio>11</prio>
+    </plugin>
+</dltproject>
