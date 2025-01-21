@@ -1,13 +1,30 @@
-use std::ffi::{CString, NulError};
-
-mod libdlt;
+#![allow(clippy::needless_doctest_main)]
+#![doc = include_str!("../README.md")]
 
 use log::{Level, Metadata, Record, SetLoggerError};
+use std::ffi::{CString, NulError};
+
+/// this module includes the generated bindings for the DLT library
+pub mod libdlt;
 
 #[derive(Debug)]
+/// Represents possible errors that can occur during initialization.
 pub enum InitializeError {
+    /// Represents an error that occurs when a null byte is found in a string
+    /// where it is not allowed.
+    ///
+    /// This error is typically encountered when converting a Rust string to a C string.
     ConversionError(NulError),
+    /// Represents an error that occurs when setting the logger.
+    ///
+    /// This error is typically encountered when there is an attempt to set a logger
+    /// after one has already been set, or if there is an issue with the logger configuration.
     LoggerError(SetLoggerError),
+    /// Represents an error returned by the DLT library.
+    ///
+    /// This variant encapsulates the `DltReturnValue` from the `libdlt` crate,
+    /// which provides detailed information about the specific error encountered
+    /// during DLT operations.
     DltLibraryError(libdlt::DltReturnValue),
 }
 
@@ -23,6 +40,35 @@ impl From<SetLoggerError> for InitializeError {
     }
 }
 
+/// Initializes the DLT logging system with the provided application and context information.
+///
+/// This function registers the application and context with the DLT daemon and sets up the logger
+/// to send log messages to the DLT system.
+///
+/// # Arguments
+///
+/// * `app_id` - A string slice that holds the application ID.
+/// * `app_description` - A string slice that holds the application description.
+/// * `context_id` - A string slice that holds the context ID.
+/// * `context_description` - A string slice that holds the context description.
+///
+/// # Errors
+///
+/// This function returns an `InitializeError` if there is an error during initialization. Possible
+/// errors include:
+///
+/// * `ConversionError` - If there is a null byte in the provided strings.
+/// * `LoggerError` - If there is an error setting the logger.
+/// * `DltLibraryError` - If there is an error returned by the DLT library.
+///
+/// # Example
+///
+/// ```rust
+/// fn main() {
+///     let _ = dlt_log::init("APID", "Application Description", "CTID", "Context Description");
+///     log::info!("This is an info message");
+/// }
+/// ```
 pub fn init(
     app_id: &str,
     app_description: &str,
@@ -70,7 +116,9 @@ pub fn init(
 struct DltLogger {
     ctx: *mut libdlt::DltContext,
 }
-// The dlt library is thread-safe, see https://github.com/COVESA/dlt-daemon/blob/master/doc/dlt_design_specification.md
+
+// The `DltLogger` struct is marked as `Send` and `Sync` because the underlying DLT library is
+// thread-safe, see https://github.com/COVESA/dlt-daemon/blob/master/doc/dlt_design_specification.md.
 unsafe impl Send for DltLogger {}
 unsafe impl Sync for DltLogger {}
 

@@ -6,6 +6,11 @@ echo "::group::building"
 cargo build
 echo "::endgroup::"
 
+# documentation
+echo "::group::documentation"
+cargo doc
+echo "::endgroup::"
+
 # linting
 echo "::group::linting"
 cargo clippy -- -D warnings
@@ -22,6 +27,11 @@ echo "::endgroup::"
 echo "::group::test with running dlt-daemon"
 dlt-daemon -d
 cargo test
+echo "::endgroup::"
+
+# examples
+echo "::group::examples"
+cargo run --example simple
 echo "::endgroup::"
 
 # code coverage
