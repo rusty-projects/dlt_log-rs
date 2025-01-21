@@ -22,8 +22,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1ff72ee08e3cb84d84adba594e0a297990fc1ed3 # stable
+      #- name: Install Rust toolchain
+      #  uses: dtolnay/rust-toolchain@1ff72ee08e3cb84d84adba594e0a297990fc1ed3 # stable
       - name: Run release-plz
         uses: release-plz/action@ca8762285a5dc0c220cb4a7896c9986ff6c97ecf # v0.5.88
         with:
@@ -47,8 +47,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1ff72ee08e3cb84d84adba594e0a297990fc1ed3 # stable
+      #- name: Install Rust toolchain
+      #  uses: dtolnay/rust-toolchain@1ff72ee08e3cb84d84adba594e0a297990fc1ed3 # stable
       - name: Run release-plz
         uses: release-plz/action@ca8762285a5dc0c220cb4a7896c9986ff6c97ecf # v0.5.88
         with:
