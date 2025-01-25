@@ -60,6 +60,30 @@ See the [Log levels](#log-levels) section for more information on how to configu
 
 ![Example logs in DLT viewer](https://raw.githubusercontent.com/rusty-projects/dlt_log-rs/main/doc/dlt-viewer-example.png)
 
+## Example for cross-compilation
+
+As an example for cross-compilation, assume a yocto SDK is installed at `/opt/poky/5.1.2` for aarch64 architecture that includes the DLT library:
+- `/opt/poky/5.1.2/environment-setup-cortexa57-poky-linux`
+- `/opt/poky/5.1.2/sysroots/cortexa57-poky-linux/usr/lib/libdlt.so`
+- `/opt/poky/5.1.2/sysroots/cortexa57-poky-linux/usr/include/dlt/dlt.h`
+
+Create `.cargo/config.toml` in your project directory with the following content:
+
+```toml
+[target.aarch64-unknown-linux-gnu]
+linker="/opt/poky/5.1.2/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-gcc"
+rustflags = [
+"-C", "link-arg=--sysroot=/opt/poky/5.1.2/sysroots/cortexa57-poky-linux",
+]
+```
+
+Bindgen needs to know the sysroot path to find the DLT headers, so set the `BINDGEN_EXTRA_CLANG_ARGS` environment variable before building the project:
+
+```bash
+export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=/opt/poky/5.1.2/sysroots/cortexa57-poky-linux"
+cargo build --release --target aarch64-unknown-linux-gnu
+```
+
 ## Log levels
 
 The log levels and logging backend are configured by the DLT system. 
