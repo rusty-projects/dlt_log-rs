@@ -69,7 +69,7 @@ The library defines an `InitializeError` enum to represent possible errors that 
 
 ## Integration
 
-The integration with the DLT system is achieved through the `libdlt` module, which provides FFI (Foreign Function Interface) bindings to the underlying C library for DLT. The `bindgen` tool is used to generate these bindings. The bindings are generated during the build process in order to ensure that the Rust code remains in sync with the system's DLT library.
+The integration with the DLT system is achieved through the underlying C library for DLT. The `bindgen` tool is used to generate the FFI (Foreign Function Interface) bindings. The bindings are generated during the build process in order to ensure that the Rust code remains in sync with the system's DLT library.
 
 ## License
 

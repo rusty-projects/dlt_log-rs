@@ -10,7 +10,7 @@ categories = ["development-tools::debugging"]
 exclude = ["doc/*.png"]
 
 [build-dependencies]
-bindgen = "0.71.1"
+bindgen = "0.71"
 
 [dependencies]
 log = { version = "0.4", features = ["std"] }
