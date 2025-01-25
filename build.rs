@@ -12,12 +12,13 @@ fn main() {
         .allowlist_item("dlt_register_app")
         .allowlist_item("dlt_register_context")
         .allowlist_item("dlt_log_string")
+        // create rust-friendly enums
+        .rustified_enum("DltReturnValue")
+        .rustified_enum("DltLogLevelType")
         // the return value shall always be checked
         .must_use_type("DltReturnValue")
         // default for initialization of DltContext
         .derive_default(true)
-        // avoid unncessary prepending, there are no conflicts
-        .prepend_enum_name(false)
         .generate()
         .expect("Unable to generate bindings");
 

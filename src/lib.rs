@@ -5,7 +5,10 @@ use log::{Level, Metadata, Record, SetLoggerError};
 use std::ffi::{CString, NulError};
 
 /// this module includes the generated bindings for the DLT library
-pub mod libdlt;
+mod libdlt;
+
+// re-export the DLT return value from the `libdlt` module for use in the `InitializeError` enum
+pub use libdlt::DltReturnValue;
 
 #[derive(Debug)]
 /// Represents possible errors that can occur during initialization.
@@ -25,7 +28,7 @@ pub enum InitializeError {
     /// This variant encapsulates the `DltReturnValue` from the `libdlt` crate,
     /// which provides detailed information about the specific error encountered
     /// during DLT operations.
-    DltLibraryError(libdlt::DltReturnValue),
+    DltLibraryError(DltReturnValue),
 }
 
 impl From<NulError> for InitializeError {
@@ -80,7 +83,7 @@ pub fn init(
     let c_app_description = CString::new(app_description)?;
     let dlt_return_value =
         unsafe { libdlt::dlt_register_app(c_app_id.as_ptr(), c_app_description.as_ptr()) };
-    if dlt_return_value != libdlt::DLT_RETURN_OK {
+    if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
         return Err(InitializeError::DltLibraryError(dlt_return_value));
     }
 
@@ -100,7 +103,7 @@ pub fn init(
             c_context_description.as_ptr(),
         )
     };
-    if dlt_return_value != libdlt::DLT_RETURN_OK {
+    if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
         return Err(InitializeError::DltLibraryError(dlt_return_value));
     }
 
@@ -130,11 +133,11 @@ impl log::Log for DltLogger {
 
     fn log(&self, record: &Record) {
         let level = match record.level() {
-            Level::Error => libdlt::DLT_LOG_ERROR,
-            Level::Warn => libdlt::DLT_LOG_WARN,
-            Level::Info => libdlt::DLT_LOG_INFO,
-            Level::Debug => libdlt::DLT_LOG_DEBUG,
-            Level::Trace => libdlt::DLT_LOG_VERBOSE,
+            Level::Error => libdlt::DltLogLevelType::DLT_LOG_ERROR,
+            Level::Warn => libdlt::DltLogLevelType::DLT_LOG_WARN,
+            Level::Info => libdlt::DltLogLevelType::DLT_LOG_INFO,
+            Level::Debug => libdlt::DltLogLevelType::DLT_LOG_DEBUG,
+            Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
         };
 
         let text = format!("{}", record.args());
