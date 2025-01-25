@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.3...v0.1.4) - 2025-01-25
+
+### Other
+
+- cross-compilation example with yocto ([#28](https://github.com/rusty-projects/dlt_log-rs/pull/28))
+- Improve README and lib.rs documentation ([#27](https://github.com/rusty-projects/dlt_log-rs/pull/27))
+- update DLT bindings and improve error handling ([#25](https://github.com/rusty-projects/dlt_log-rs/pull/25))
+
 ## [0.1.3](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.2...v0.1.3) - 2025-01-21
 
 ### Other
