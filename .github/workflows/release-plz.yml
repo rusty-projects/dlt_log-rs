@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install -y libdlt-dev
       - name: Run release-plz
-        uses: release-plz/action@ca8762285a5dc0c220cb4a7896c9986ff6c97ecf # v0.5.88
+        uses: release-plz/action@608dd7882102f11581db9edb9ce790d2bab5c995 # v0.5.89
         with:
           command: release
         env:
@@ -48,7 +48,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run release-plz
-        uses: release-plz/action@ca8762285a5dc0c220cb4a7896c9986ff6c97ecf # v0.5.88
+        uses: release-plz/action@608dd7882102f11581db9edb9ce790d2bab5c995 # v0.5.89
         with:
           command: release-pr
         env:
