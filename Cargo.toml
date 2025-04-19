@@ -4,6 +4,7 @@ version = "0.1.4"
 description = "Log crate adapter for integrating with the Diagnostic Log and Trace (DLT) system"
 license = "MIT"
 edition = "2021"
+rust-version = "1.82"
 repository = "https://github.com/rusty-projects/dlt_log-rs"
 keywords = ["dlt", "log", "logging", "adapter"]
 categories = ["development-tools::debugging"]
