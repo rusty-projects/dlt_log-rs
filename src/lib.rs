@@ -9,7 +9,9 @@ The DLT system is a flexible and scalable logging framework that is widely used 
 It provides features such as log level filtering, message formatting, and log message buffering.
 For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
-# System dependencies
+# Dependencies
+At least rust version 1.82 is required to build this crate.
+This is caused by latest `bindgen` version which is not compatible with older rust versions, see [bindgen issue #3052](https://github.com/rust-lang/rust-bindgen/issues/3052).
 
 You need to have `libclang-dev` installed on your system to run the binding generation and `libdlt-dev` to link against the DLT library.
 On Ubuntu, you can install that with the following command:
