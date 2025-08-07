@@ -1,6 +1,6 @@
 [package]
 name = "dlt_log"
-version = "0.1.5"
+version = "0.1.6"
 description = "Log crate adapter for integrating with the Diagnostic Log and Trace (DLT) system"
 license = "MIT"
 edition = "2021"
