@@ -28,9 +28,8 @@ Always reference these instructions first and fallback to search or bash command
   - Run specific test: `cargo test --test init_ok` -- takes 11 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
 
 - **Tests with DLT daemon**:
-  - Start daemon: `sudo dlt-daemon -d` (requires sudo due to system permissions)
+  - Start daemon: `dlt-daemon -d`
   - Run all tests: `cargo test` -- takes 60 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
-  - Note: Tests display "FIFO /tmp/dlt cannot be opened" messages - this is expected behavior when daemon runs in restricted environment.
 
 ### Examples and Validation
 - **Run example**: `cargo run --example simple` -- takes 10 seconds. Set timeout to 60+ seconds.
@@ -43,7 +42,7 @@ Always reference these instructions first and fallback to search or bash command
 - Generates `lcov.info` file for coverage analysis.
 
 ### Complete CI Validation
-- **Full CI**: `./scripts/ci.sh` -- NOTE: Requires modification to use `sudo dlt-daemon -d` instead of `dlt-daemon -d` for proper daemon startup.
+- **Full CI**: `./scripts/ci.sh`
 - The CI script performs all build, test, lint, and coverage steps in sequence.
 
 ## Validation Scenarios
@@ -51,13 +50,13 @@ Always reference these instructions first and fallback to search or bash command
 ALWAYS test actual functionality after making changes:
 
 1. **Basic functionality test**:
-   - Ensure DLT daemon is running: `sudo dlt-daemon -d`
+   - Ensure DLT daemon is running: `dlt-daemon -d`
    - Run: `DLT_LOCAL_PRINT_MODE=FORCE_ON DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple`
    - Verify you see all 5 log levels (verbose, debug, info, warn, error) in console output
 
 2. **Integration test**:
    - Run complete test suite: `cargo test`
-   - Verify all 8 tests pass (2 unit tests + 5 integration tests + 1 log test)
+   - Verify all tests pass
 
 3. **Code quality validation**:
    - Always run `cargo fmt -- --check` before committing
@@ -69,7 +68,7 @@ ALWAYS test actual functionality after making changes:
 ### Repository Structure
 ```
 .
-├── README.md              # Main documentation with usage examples
+├── README.md             # Main documentation with usage examples
 ├── Cargo.toml            # Project configuration, dependencies, metadata
 ├── build.rs              # Bindgen configuration for FFI generation
 ├── src/
