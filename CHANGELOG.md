@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.6](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.5...v0.1.6) - 2025-08-07
+
+### Other
+
+- Add comprehensive GitHub Copilot instructions for DLT log Rust adapter ([#59](https://github.com/rusty-projects/dlt_log-rs/pull/59))
+- Include Rust 1.89 in CI testing matrix ([#57](https://github.com/rusty-projects/dlt_log-rs/pull/57))
+- Bump release-plz/action from 0.5.108 to 0.5.110 ([#55](https://github.com/rusty-projects/dlt_log-rs/pull/55))
+- Bump ghcr.io/devcontainers/features/rust from 1.3.3 to 1.5.0 ([#53](https://github.com/rusty-projects/dlt_log-rs/pull/53))
+- Include Rust 1.88 in testing matrix and update development environment ([#51](https://github.com/rusty-projects/dlt_log-rs/pull/51))
+- Bump release-plz/action from 0.5.107 to 0.5.108 ([#49](https://github.com/rusty-projects/dlt_log-rs/pull/49))
+- Update bindgen requirement from 0.71 to 0.72 ([#48](https://github.com/rusty-projects/dlt_log-rs/pull/48))
+- Bump release-plz/action from 0.5.104 to 0.5.107 ([#45](https://github.com/rusty-projects/dlt_log-rs/pull/45))
+- Update to rust 1.87 ([#46](https://github.com/rusty-projects/dlt_log-rs/pull/46))
+
 ## [0.1.5](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.4...v0.1.5) - 2025-04-19
 
 ### Other
