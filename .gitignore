@@ -1,3 +1,4 @@
 /Cargo.lock
 /target
 /lcov.info
+.devcontainer/.rust-channel
