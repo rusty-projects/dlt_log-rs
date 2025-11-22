@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.6...v0.1.7) - 2025-11-22
+
+### Other
+
+- Verify compatibility with 1.90 and 1.91 ([#70](https://github.com/rusty-projects/dlt_log-rs/pull/70))
+- Bump release-plz/action from 0.5.110 to 0.5.118 ([#69](https://github.com/rusty-projects/dlt_log-rs/pull/69))
+- Bump actions/checkout from 4 to 5 ([#65](https://github.com/rusty-projects/dlt_log-rs/pull/65))
+- Add Rust pre-release versions (beta and nightly) to CI checks with strict compatibility requirements ([#61](https://github.com/rusty-projects/dlt_log-rs/pull/61))
+
 ## [0.1.6](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.5...v0.1.6) - 2025-08-07
 
 ### Other
