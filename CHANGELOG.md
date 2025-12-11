@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.6...v0.1.7) - 2025-12-11
+
+### Other
+
+- Fix pre-commit on main ([#78](https://github.com/rusty-projects/dlt_log-rs/pull/78))
+- Verify compatibility with rust 1.92 ([#77](https://github.com/rusty-projects/dlt_log-rs/pull/77))
+- Add tests using dlt-receive ([#76](https://github.com/rusty-projects/dlt_log-rs/pull/76))
+- Bump release-plz/action from 0.5.119 to 0.5.120 ([#74](https://github.com/rusty-projects/dlt_log-rs/pull/74))
+- Added filename and code line inside log message ([#75](https://github.com/rusty-projects/dlt_log-rs/pull/75))
+- Bump actions/checkout from 5 to 6 ([#71](https://github.com/rusty-projects/dlt_log-rs/pull/71))
+- Bump release-plz/action from 0.5.118 to 0.5.119 ([#72](https://github.com/rusty-projects/dlt_log-rs/pull/72))
+- Verify compatibility with 1.90 and 1.91 ([#70](https://github.com/rusty-projects/dlt_log-rs/pull/70))
+- Bump release-plz/action from 0.5.110 to 0.5.118 ([#69](https://github.com/rusty-projects/dlt_log-rs/pull/69))
+- Bump actions/checkout from 4 to 5 ([#65](https://github.com/rusty-projects/dlt_log-rs/pull/65))
+- Add Rust pre-release versions (beta and nightly) to CI checks with strict compatibility requirements ([#61](https://github.com/rusty-projects/dlt_log-rs/pull/61))
+
 ## [0.1.6](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.5...v0.1.6) - 2025-08-07
 
 ### Other
