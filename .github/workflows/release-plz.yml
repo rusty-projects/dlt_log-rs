@@ -19,13 +19,13 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Install dependencies
         run: sudo apt-get install -y libdlt-dev
       - name: Run release-plz
-        uses: release-plz/action@d529f731ae3e89610ada96eda34e5c6ba3b12214 # v0.5.118
+        uses: release-plz/action@1efcf74dfcd6e500990dad806e286899ae384064 # v0.5.119
         with:
           command: release
         env:
@@ -44,11 +44,11 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Run release-plz
-        uses: release-plz/action@d529f731ae3e89610ada96eda34e5c6ba3b12214 # v0.5.118
+        uses: release-plz/action@1efcf74dfcd6e500990dad806e286899ae384064 # v0.5.119
         with:
           command: release-pr
         env:
