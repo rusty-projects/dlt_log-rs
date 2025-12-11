@@ -1,25 +1,35 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
       - id: check-json
       - id: check-shebang-scripts-are-executable
+        exclude: '.+\.rs'
       - id: check-symlinks
       - id: check-toml
+      - id: check-xml
       - id: check-yaml
       - id: destroyed-symlinks
+      - id: detect-private-key
       - id: end-of-file-fixer
       - id: mixed-line-ending
         args: [ --fix=lf ]
+      - id: no-commit-to-branch
+        args: [--branch, staging, --branch, main]
       - id: trailing-whitespace
 
   - repo: local
     hooks:
-      - id: ci
-        name: Run CI tests
-        description: Run all tests that would be executed in CI
-        entry: ./scripts/ci.sh
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --
+        pass_filenames: true
+        types: [file, rust]
+        language: system
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: cargo clippy -- -D warnings
         pass_filenames: false
         language: system

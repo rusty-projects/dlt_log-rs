@@ -23,7 +23,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Testing
 **IMPORTANT**: Tests interact with the DLT daemon and require specific setup.
 
-- **Tests without DLT daemon**: 
+- **Tests without DLT daemon**:
   - Stop daemon: `killall --wait dlt-daemon || true`
   - Run specific test: `cargo test --test init_ok` -- takes 11 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
 
