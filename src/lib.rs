@@ -103,11 +103,11 @@ DLT_LOCAL_PRINT_MODE=FORCE_ON DLT_INITIAL_LOG_LEVEL="::6" cargo run --example si
 The output will look like this:
 
 ```text
-2025/01/21 19:12:22.090974   28995094 000 ECU1 TEST EXPL log verbose V 1 [Tracing the untraceable!]
-2025/01/21 19:12:22.091176   28995096 001 ECU1 TEST EXPL log debug V 1 [Debugging the debugger!]
-2025/01/21 19:12:22.091248   28995097 002 ECU1 TEST EXPL log info V 1 [Information overload: 2 + 2 = 4]
-2025/01/21 19:12:22.091284   28995097 003 ECU1 TEST EXPL log warn V 1 [Warning: Low on coffee!]
-2025/01/21 19:12:22.091336   28995097 004 ECU1 TEST EXPL log error V 1 [Error: Something went terribly right!]
+2025/12/11 18:13:51.456738   57739781 000 ECU1 TEST EXPL log verbose V 1 [[simple.rs:8] Tracing the untraceable!]
+2025/12/11 18:13:51.456809   57739782 001 ECU1 TEST EXPL log debug V 1 [[simple.rs:9] Debugging the debugger!]
+2025/12/11 18:13:51.456888   57739783 002 ECU1 TEST EXPL log info V 1 [[simple.rs:10] Information overload: 2 + 2 = 4]
+2025/12/11 18:13:51.456931   57739783 003 ECU1 TEST EXPL log warn V 1 [[simple.rs:11] Warning: Low on coffee!]
+2025/12/11 18:13:51.456989   57739784 004 ECU1 TEST EXPL log error V 1 [[simple.rs:12] Error: Something went terribly right!]
 ```
 
 # Errors
@@ -303,5 +303,80 @@ mod tests {
         // always needs be enabled as this is handled by DLT
         let metadata = Metadata::builder().level(Level::max()).build();
         assert!(logger.enabled(&metadata));
+    }
+
+    #[test]
+    fn test_log() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!("Test log message"))
+            .level(Level::Info)
+            .file(Some("test_file.rs"))
+            .line(Some(42))
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_empty_values() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(None)
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("/my/test/path"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths_2() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("path/"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths_3() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("/"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
     }
 }

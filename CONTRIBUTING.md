@@ -27,5 +27,5 @@ To manually start the DLT daemon, run `dlt-daemon -d`.
 Full CI tests can be executed by calling the script `./scripts/ci.sh`.
 
 ## Code coverage
-To update the code coverage data, run `./scripts/update-lcov.sh`. 
+To update the code coverage data, run `./scripts/update-lcov.sh`.
 In Visual Studio Code, you can use the `ryanluker.vscode-coverage-gutters` extension to display the coverage information in the editor.
