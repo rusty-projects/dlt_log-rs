@@ -2,6 +2,10 @@
 set -eu
 export CARGO_TERM_COLOR=always
 
+echo "::group::pre-commit"
+pre-commit run
+echo "::endgroup::"
+
 echo "::group::building"
 cargo build
 echo "::endgroup::"
