@@ -255,7 +255,17 @@ impl log::Log for DltLogger {
             Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
         };
 
-        let text = format!("{}", record.args());
+        let text = format!(
+            "[{}:{}] {}",
+            record
+                .file_static()
+                .unwrap_or("?")
+                .rsplit('/')
+                .next()
+                .unwrap(),
+            record.line().unwrap_or(0),
+            record.args()
+        );
 
         let c_text = match CString::new(text) {
             Ok(result) => result,
