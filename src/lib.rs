@@ -304,4 +304,79 @@ mod tests {
         let metadata = Metadata::builder().level(Level::max()).build();
         assert!(logger.enabled(&metadata));
     }
+
+    #[test]
+    fn test_log() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!("Test log message"))
+            .level(Level::Info)
+            .file(Some("test_file.rs"))
+            .line(Some(42))
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_empty_values() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(None)
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("/my/test/path"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths_2() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("path/"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
+
+    #[test]
+    fn test_log_paths_3() {
+        let logger = DltLogger { ctx: null_mut() };
+
+        let record = Record::builder()
+            .args(format_args!(""))
+            .level(Level::Info)
+            .file(Some("/"))
+            .line(None)
+            .build();
+
+        // just ensure that log does not panic
+        logger.log(&record);
+    }
 }
