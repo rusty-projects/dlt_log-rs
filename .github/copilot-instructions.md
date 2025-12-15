@@ -9,10 +9,7 @@ Always reference these instructions first and fallback to search or bash command
 **CRITICAL**: ALL build and test commands take significant time. NEVER CANCEL any build, test, or coverage command. Set explicit timeouts as shown below.
 
 ### Dependencies and Setup
-- Install system dependencies: `sudo apt-get update && sudo apt-get install -y libclang-dev libdlt-dev dlt-daemon`
-- Minimum Rust version: 1.82 (due to bindgen requirements)
-- Install coverage tools: `rustup component add llvm-tools-preview`
-- Install cargo-llvm-cov: `curl -LsSf https://github.com/taiki-e/cargo-llvm-cov/releases/download/v0.6.16/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz | tar xzf - -C ~/.cargo/bin`
+- Run `.devcontainer/onCreateCommand.sh` to install dependencies
 
 ### Build Process
 - **Build**: `cargo build` -- takes 40 seconds on first build. NEVER CANCEL. Set timeout to 120+ seconds.
@@ -37,13 +34,11 @@ Always reference these instructions first and fallback to search or bash command
 - Expected output shows log messages with timestamps and log levels from TRACE to ERROR.
 
 ### Code Coverage
-- **Coverage**: `cargo llvm-cov --fail-under-lines 80` -- takes 63 seconds. NEVER CANCEL. Set timeout to 180+ seconds.
-- **Coverage report**: `./scripts/update-lcov.sh` -- takes 56 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
-- Generates `lcov.info` file for coverage analysis.
+- **Coverage report**: `./scripts/coverage.sh` -- takes 56 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
 
 ### Complete CI Validation
 - **Full CI**: `./scripts/ci.sh`
-- The CI script performs all build, test, lint, and coverage steps in sequence.
+- The CI script performs all build, test, lint steps in sequence.
 
 ## Validation Scenarios
 
@@ -80,7 +75,7 @@ ALWAYS test actual functionality after making changes:
 ├── tests/                # Integration tests for initialization and logging
 ├── scripts/
 │   ├── ci.sh             # Complete CI validation script
-│   └── update-lcov.sh    # Coverage report generation
+│   └── coverage.sh       # Coverage report generation
 ├── .github/workflows/
 │   └── ci.yml            # GitHub Actions CI configuration
 └── .devcontainer/        # Dev container setup for consistent environment
@@ -91,7 +86,7 @@ ALWAYS test actual functionality after making changes:
 - **Dependencies**: libclang-dev (for bindgen), libdlt-dev (for DLT library), dlt-daemon (for testing)
 - **Build system**: Cargo with custom build.rs for FFI binding generation
 - **Testing**: Unit tests + integration tests requiring DLT daemon
-- **Coverage requirement**: 80% line coverage (enforced in CI)
+- **Coverage requirement**: 100% coverage (enforced in CI)
 - **Documentation**: Available at [docs.rs/dlt_log](https://docs.rs/dlt_log)
 
 ### Environment-Specific Notes
@@ -101,7 +96,7 @@ ALWAYS test actual functionality after making changes:
 
 ### Build Artifacts
 - **Documentation**: Generated in `target/doc/dlt_log/`
-- **Coverage report**: Generated as `lcov.info` in repository root
+- **Coverage report**: Generated as `target/coverage/lcov.info`
 - **Bindings**: Auto-generated `libdlt_bindings.rs` in build output directory
 
 Always build and exercise your changes with the validation scenarios above before considering the task complete.

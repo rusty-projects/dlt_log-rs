@@ -37,8 +37,3 @@ echo "::endgroup::"
 echo "::group::examples"
 cargo run --example simple
 echo "::endgroup::"
-
-# code coverage
-echo "::group::code coverage, required: 80% line coverage"
-cargo llvm-cov --fail-under-lines 80
-echo "::endgroup::"
