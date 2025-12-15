@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.8](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.7...v0.1.8) - 2025-12-15
+
+### Other
+
+- Refactor code coverage reporting ([#79](https://github.com/rusty-projects/dlt_log-rs/pull/79))
+
 ## [0.1.7](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.6...v0.1.7) - 2025-12-11
 
 ### Other
