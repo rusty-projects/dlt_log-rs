@@ -1,0 +1,26 @@
+name: Code coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Set rust version in devcontainer
+      run: ./scripts/set-rust-version.sh nightly
+
+    - name: Code coverage
+      uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6 # v0.3.1900000417
+      with:
+        runCmd: ./scripts/coverage.sh
