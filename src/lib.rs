@@ -31,7 +31,7 @@ Add the `dlt_log` crate to your `Cargo.toml`:
 ```toml
 [dependencies]
 log = { version = "0.4", features = ["std"] }
-dlt_log = "0.1"
+dlt_log = "1"
 ```
 
 To use this library, you need to initialize it with your application and context information.
