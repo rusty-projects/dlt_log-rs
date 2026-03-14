@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.7...v1.0.0) - 2026-03-14
+
+### Other
+
+- Prepare release 1.0.0: bump version, update Rust versions in CI and devcontainer
+
 ## [0.1.7](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.6...v0.1.7) - 2025-12-11
 
 ### Other
