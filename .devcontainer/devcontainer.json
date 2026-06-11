@@ -3,7 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:noble",
   "features": {
     "ghcr.io/devcontainers/features/rust:1.5.0": {
-      "version": "nightly-2026-03-14",
+      "version": "nightly-2026-06-10",
       "profile": "default",
       "targets": ""
     }
