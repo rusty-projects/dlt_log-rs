@@ -2,7 +2,7 @@
   "name": "dlt_log-rs-devcontainer",
   "image": "mcr.microsoft.com/devcontainers/base:noble",
   "features": {
-    "ghcr.io/devcontainers/features/rust:1.5.0": {
+    "ghcr.io/devcontainers/features/rust:1.5.1": {
       "version": "nightly-2026-06-10",
       "profile": "default",
       "targets": ""
