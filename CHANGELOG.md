@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1](https://github.com/rusty-projects/dlt_log-rs/compare/v1.0.0...v1.0.1) - 2026-07-31
+
+### Other
+
+- Bump release-plz/action from 0.5.129 to 0.5.131 ([#98](https://github.com/rusty-projects/dlt_log-rs/pull/98))
+- Update default rust version in devcontainer ([#101](https://github.com/rusty-projects/dlt_log-rs/pull/101))
+- Use default rust version in coverage build ([#100](https://github.com/rusty-projects/dlt_log-rs/pull/100))
+- Bump actions/checkout from 6 to 7 ([#97](https://github.com/rusty-projects/dlt_log-rs/pull/97))
+- Bump ghcr.io/devcontainers/features/rust from 1.5.0 to 1.5.1 ([#99](https://github.com/rusty-projects/dlt_log-rs/pull/99))
+- Rename coverage build ([#94](https://github.com/rusty-projects/dlt_log-rs/pull/94))
+- Add devcontainer lock file and update CI config ([#93](https://github.com/rusty-projects/dlt_log-rs/pull/93))
+- Bump release-plz/action from 0.5.128 to 0.5.129 ([#91](https://github.com/rusty-projects/dlt_log-rs/pull/91))
+- Bump devcontainers/ci from 0.3.1900000449 to 0.3.1900000450 ([#92](https://github.com/rusty-projects/dlt_log-rs/pull/92))
+- Bump devcontainers/ci from 0.3.1900000417 to 0.3.1900000449 ([#90](https://github.com/rusty-projects/dlt_log-rs/pull/90))
+- Bump release-plz/action from 0.5.124 to 0.5.128 ([#85](https://github.com/rusty-projects/dlt_log-rs/pull/85))
+
 ## [1.0.0](https://github.com/rusty-projects/dlt_log-rs/compare/v0.1.7...v1.0.0) - 2026-03-14
 
 ### Other
