@@ -29,7 +29,7 @@ echo "::endgroup::"
 
 # test with running dlt-daemon
 echo "::group::test with running dlt-daemon"
-dlt-daemon -d
+./scripts/start-dlt-daemon.sh
 cargo test
 echo "::endgroup::"
 

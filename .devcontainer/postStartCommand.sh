@@ -1,4 +1,4 @@
 #!/bin/bash
 set -eu
 
-dlt-daemon -d
+./scripts/start-dlt-daemon.sh
