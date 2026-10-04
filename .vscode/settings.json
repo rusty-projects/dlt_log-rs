@@ -1,10 +1,5 @@
 {
     "editor.formatOnSave": true,
-    "github.copilot.chat.commitMessageGeneration.instructions": [
-        {
-            "file": ".github/.copilot-commit-message-instructions.md"
-        }
-    ],
     "rust-analyzer.check.command": "clippy",
     "rust-analyzer.cargo.buildScripts.enable": true,
     "coverage-gutters.coverageBaseDir": "target/coverage",
