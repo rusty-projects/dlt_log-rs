@@ -9,7 +9,7 @@ Always reference these instructions first and fallback to search or bash command
 **CRITICAL**: A cold build (bindgen + dependencies) and coverage runs can take a minute or more. NEVER CANCEL any build, test, or coverage command. Use generous timeouts (120+ seconds).
 
 ### Dependencies and Setup
-- The devcontainer (`.devcontainer/`) is the reference environment. It installs everything via `.devcontainer/onCreateCommand.sh` and starts `dlt-daemon -d` on container start via `.devcontainer/postStartCommand.sh`.
+- The devcontainer (`.devcontainer/`) is the reference environment. It installs everything via `.devcontainer/onCreateCommand.sh` and starts the DLT daemon (bound to localhost) on container start via `.devcontainer/postStartCommand.sh`.
 - Outside the devcontainer, run `.devcontainer/onCreateCommand.sh` to install dependencies.
 
 ### Build Process
@@ -27,7 +27,7 @@ Always reference these instructions first and fallback to search or bash command
   - Run specific test: `cargo test --test init_ok`
 
 - **Tests with DLT daemon**:
-  - Start daemon (if not already running, check with `pgrep dlt-daemon`): `dlt-daemon -d`
+  - Start daemon (if not already running, check with `pgrep dlt-daemon`): `./scripts/start-dlt-daemon.sh`
   - Run all tests: `cargo test`
   - `tests/log.rs` uses `dlt-receive` (package `dlt-tools`) to verify that messages reach the daemon.
 
@@ -48,7 +48,7 @@ Always reference these instructions first and fallback to search or bash command
 ALWAYS test actual functionality after making changes:
 
 1. **Basic functionality test**:
-   - Ensure DLT daemon is running: `dlt-daemon -d`
+   - Ensure DLT daemon is running: `./scripts/start-dlt-daemon.sh`
    - Run: `DLT_LOCAL_PRINT_MODE=FORCE_ON DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple`
    - Verify you see all 5 log levels (verbose, debug, info, warn, error) in console output
 
@@ -90,6 +90,7 @@ ALWAYS test actual functionality after making changes:
 ├── scripts/
 │   ├── ci.sh             # Complete CI validation script
 │   ├── coverage.sh       # Coverage report generation and 100% check
+│   ├── start-dlt-daemon.sh # Starts dlt-daemon bound to localhost
 │   └── set-rust-version.sh # Sets the Rust toolchain in devcontainer.json (used by CI matrix)
 ├── .github/
 │   ├── dependabot.yml
