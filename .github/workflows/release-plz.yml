@@ -23,7 +23,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install dependencies
-        run: sudo apt-get install -y libdlt-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdlt-dev
       - name: Run release-plz
         uses: release-plz/action@b8d6b54b02889ff2ae2bb82e8b57c3a8fc1683a5 # v0.5.139
         with:
@@ -48,7 +50,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install dependencies
-        run: sudo apt-get install -y libdlt-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdlt-dev
       - name: Run release-plz
         uses: release-plz/action@b8d6b54b02889ff2ae2bb82e8b57c3a8fc1683a5 # v0.5.139
         with:
