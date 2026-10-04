@@ -1,6 +1,8 @@
 {
   "name": "dlt_log-rs-devcontainer",
-  "image": "mcr.microsoft.com/devcontainers/base:noble",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "features": {
     "ghcr.io/devcontainers/features/rust:1.6.0": {
       "version": "nightly-2026-10-03",

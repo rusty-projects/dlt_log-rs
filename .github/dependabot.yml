@@ -12,3 +12,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
