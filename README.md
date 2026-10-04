@@ -117,6 +117,20 @@ The output will look like this:
 2025/12/11 18:13:51.456989   57739784 004 ECU1 TEST EXPL log error V 1 [[simple.rs:12] Error: Something went terribly right!]
 ```
 
+## Logging untrusted data
+
+Log messages are passed to DLT as they are, without escaping control characters.
+Inside the DLT protocol this is harmless, as every message has an explicit length.
+However, tools that print messages as text, e.g. the console output with `DLT_LOCAL_PRINT_MODE=FORCE_ON` or `dlt-receive`, print most control characters unchanged.
+Line breaks are replaced by spaces, but ANSI escape sequences are not.
+Untrusted data in a log message can therefore inject terminal escape sequences, e.g. to hide or alter what is displayed.
+If you log untrusted data, escape it before logging, e.g. by using the `{:?}` format specifier:
+
+```rust
+let user_input = "name\x1b[2K\x1b[1Gfaked content";
+log::info!("User name: {:?}", user_input);
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/rusty-projects/dlt_log-rs/blob/main/LICENSE) file for details.
