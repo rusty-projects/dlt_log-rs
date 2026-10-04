@@ -193,9 +193,13 @@ pub fn init(
     context_id: &str,
     context_description: &str,
 ) -> Result<(), InitializeError> {
-    // register application
+    // convert all strings first, so that no DLT state is created for invalid input
     let c_app_id = CString::new(app_id)?;
     let c_app_description = CString::new(app_description)?;
+    let c_context_id = CString::new(context_id)?;
+    let c_context_description = CString::new(context_description)?;
+
+    // register application
     let dlt_return_value =
         unsafe { libdlt::dlt_register_app(c_app_id.as_ptr(), c_app_description.as_ptr()) };
     if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
@@ -209,8 +213,6 @@ pub fn init(
     };
 
     // register context
-    let c_context_id = CString::new(context_id)?;
-    let c_context_description = CString::new(context_description)?;
     let dlt_return_value = unsafe {
         libdlt::dlt_register_context(
             dlt_logger.ctx,
@@ -219,10 +221,13 @@ pub fn init(
         )
     };
     if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
+        // context is not registered, so DLT does not use it and it can be freed
+        drop(unsafe { Box::from_raw(dlt_logger.ctx) });
         return Err(InitializeError::DltLibraryError(dlt_return_value));
     }
 
-    // set global logger
+    // set global logger; on error the context is intentionally leaked, as it stays registered
+    // with DLT
     log::set_boxed_logger(Box::new(dlt_logger))?;
 
     // set max level; DLT system takes care on filtering
