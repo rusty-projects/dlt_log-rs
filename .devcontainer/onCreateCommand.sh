@@ -30,5 +30,5 @@ rm -f "$LLVM_COV_TARBALL"
 
 # pre-commit
 sudo apt-get install -y python3-pip
-pip3 install --break-system-packages pre-commit==4.6.2
+pip3 install --break-system-packages --require-hashes -r .devcontainer/requirements.txt
 pre-commit install
