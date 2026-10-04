@@ -16,12 +16,6 @@ fn log_test() {
     log::debug!("Test debug");
     log::trace!("Test trace");
 
-    // no panic when providing invalid c-string
-    // let x: [u8; 5] = [0, b'T', b'E', b'S', b'T'];
-    //let str_with_null: &str = std::str::from_utf8(&x).unwrap();
-    //log::info!("{}", str_with_null);
-    //    2025/12/11 17:50:20.681635   43991829 003 ECU1 TEST INT- log info V 1 [ERROR: NulError when converting log message from Rust to C.]
-
     // get data
     let dlt_receive = Command::new("timeout")
         .arg("1")

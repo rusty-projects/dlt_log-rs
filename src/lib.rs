@@ -267,12 +267,9 @@ impl log::Log for DltLogger {
             record.args()
         );
 
-        let c_text = match CString::new(text) {
-            Ok(result) => result,
-            Err(_error) => {
-                CString::from(c"ERROR: NulError when converting log message from Rust to C.")
-            }
-        };
+        // escape interior NUL bytes instead of dropping the message, so that
+        // data containing NUL bytes cannot suppress a log message
+        let c_text = CString::new(text.replace('\0', "\\0")).unwrap_or_default();
 
         let _dlt_return_value = unsafe { libdlt::dlt_log_string(self.ctx, level, c_text.as_ptr()) };
         // not much we can do here in case of error
