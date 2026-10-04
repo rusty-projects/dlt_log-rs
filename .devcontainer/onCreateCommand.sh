@@ -20,8 +20,8 @@ fi
 
 # for coverage measurement (install after setting up the correct toolchain)
 rustup component add llvm-tools
-LLVM_COV_VERSION=0.8.7
-LLVM_COV_SHA256=9a75fe29538d3800b3da57f6f6efb64cba5c720a257bf0cb8b51f39d495a9168
+LLVM_COV_VERSION=0.9.1
+LLVM_COV_SHA256=b3f68e625481fed9b16444174f3fa5ebcdbde4a1878803a35eabe2dcefcdc41a
 LLVM_COV_TARBALL=$(mktemp)
 curl -LsSf -o "$LLVM_COV_TARBALL" "https://github.com/taiki-e/cargo-llvm-cov/releases/download/v${LLVM_COV_VERSION}/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz"
 echo "${LLVM_COV_SHA256}  ${LLVM_COV_TARBALL}" | sha256sum --check --strict
