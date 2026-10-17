@@ -1,6 +1,6 @@
 # Python tools for the devcontainer, pinned with hashes.
 # Generated with: pip-compile --generate-hashes --allow-unsafe --strip-extras
-# from a requirements.in containing: pre-commit==4.6.2
+# from a requirements.in containing: pre-commit==4.7.0
 cfgv==3.5.0 \
     --hash=sha256:a8dc6b26ad22ff227d2634a65cb388215ce6cc96bbcc5cfde7641ae87e8dacc0 \
     --hash=sha256:d5b1034354820651caa73ede66a6294d6e95c1b00acc5e9b098e917404669132
@@ -31,7 +31,7 @@ platformdirs==4.12.3 \
     --hash=sha256:080f3b39423b5abfca9a23d84c4e9795f54d395cd8459867a8ded44084fcd5f8 \
     --hash=sha256:427fc0bb321ae0c5b037fa03238ca74820437be162e78b4848c4d4055b9b766c
     # via virtualenv
-pre-commit==4.6.2 \
+pre-commit==4.7.0 \
     --hash=sha256:8f5d7bfb021ecdbcd9d49d89847082dd24172ccde534390081a679ad046e2441 \
     --hash=sha256:e2dde9a75d3bce11bd3831c26d134df00a2803c1d818be6a0383c3dcda25dc4e
     # via -r requirements.in
