@@ -132,6 +132,8 @@ These include conversion errors, logger errors, and DLT library errors.
 
 use log::{Level, Metadata, Record, SetLoggerError};
 use std::ffi::{CString, NulError};
+use std::ptr::null_mut;
+use std::sync::{Mutex, PoisonError};
 
 /// this module includes the generated bindings for the DLT library
 mod libdlt;
@@ -190,7 +192,9 @@ impl From<SetLoggerError> for InitializeError {
 /// errors include:
 ///
 /// * `ConversionError` - If there is a null byte in the provided strings.
-/// * `LoggerError` - If there is an error setting the logger.
+/// * `LoggerError` - If there is an error setting the logger, e.g. because a logger is already set,
+///   also by a previous successful call of this function. A failed call leaves no DLT state behind
+///   and does not affect an already running logger.
 /// * `DltLibraryError` - If there is an error returned by the DLT library.
 ///
 /// # Example
@@ -213,6 +217,16 @@ pub fn init(
     let c_context_id = CString::new(context_id)?;
     let c_context_description = CString::new(context_description)?;
 
+    // serialize initialization, so that concurrent calls cannot interleave their DLT
+    // registrations; a panic cannot leave the flag in an inconsistent state, so ignore poisoning
+    let mut initialized = INITIALIZED.lock().unwrap_or_else(PoisonError::into_inner);
+    if *initialized {
+        // Registering again would replace the application of the running logger, so fail before
+        // any DLT call. The global logger is set, so this returns the same error as setting it
+        // again.
+        return Err(log::set_logger(&UNUSED_LOGGER).unwrap_err().into());
+    }
+
     // register application
     let dlt_return_value =
         unsafe { libdlt::dlt_register_app(c_app_id.as_ptr(), c_app_description.as_ptr()) };
@@ -222,33 +236,40 @@ pub fn init(
 
     // create logger
     let ctx: Box<libdlt::DltContext> = Box::default();
-    let dlt_logger = DltLogger {
-        ctx: Box::into_raw(ctx),
-    };
+    let ctx = Box::into_raw(ctx);
 
     // register context
     let dlt_return_value = unsafe {
-        libdlt::dlt_register_context(
-            dlt_logger.ctx,
-            c_context_id.as_ptr(),
-            c_context_description.as_ptr(),
-        )
+        libdlt::dlt_register_context(ctx, c_context_id.as_ptr(), c_context_description.as_ptr())
     };
     if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
         // context is not registered, so DLT does not use it and it can be freed
-        drop(unsafe { Box::from_raw(dlt_logger.ctx) });
+        drop(unsafe { Box::from_raw(ctx) });
+        let _ = unsafe { libdlt::dlt_unregister_app() };
         return Err(InitializeError::DltLibraryError(dlt_return_value));
     }
 
-    // set global logger; on error the context is intentionally leaked, as it stays registered
-    // with DLT
-    log::set_boxed_logger(Box::new(dlt_logger))?;
+    // set global logger; fails if another logger is already set
+    if let Err(err) = log::set_boxed_logger(Box::new(DltLogger { ctx })) {
+        // undo the registration, so that no DLT state is left behind
+        let _ = unsafe { libdlt::dlt_unregister_context(ctx) };
+        drop(unsafe { Box::from_raw(ctx) });
+        let _ = unsafe { libdlt::dlt_unregister_app() };
+        return Err(err.into());
+    }
+    *initialized = true;
 
     // set max level; DLT system takes care on filtering
     log::set_max_level(log::STATIC_MAX_LEVEL);
 
     Ok(())
 }
+
+/// Whether [`init`] has set the global logger. The mutex also serializes calls to [`init`].
+static INITIALIZED: Mutex<bool> = Mutex::new(false);
+
+/// Logger only used to obtain a [`SetLoggerError`] on repeated initialization, never set.
+static UNUSED_LOGGER: DltLogger = DltLogger { ctx: null_mut() };
 
 struct DltLogger {
     ctx: *mut libdlt::DltContext,
@@ -299,8 +320,6 @@ impl log::Log for DltLogger {
 
 #[cfg(test)]
 mod tests {
-    use std::ptr::null_mut;
-
     use log::Log;
 
     use super::*;

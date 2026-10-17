@@ -11,6 +11,8 @@ fn main() {
         // list of methods we use
         .allowlist_item("dlt_register_app")
         .allowlist_item("dlt_register_context")
+        .allowlist_item("dlt_unregister_app")
+        .allowlist_item("dlt_unregister_context")
         .allowlist_item("dlt_log_string")
         // create rust-friendly enums
         .rustified_enum("DltReturnValue")
