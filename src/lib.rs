@@ -274,27 +274,27 @@ impl log::Log for DltLogger {
             Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
         };
 
-        let text = format!(
-            "[{}:{}] {}",
-            record
-                .file_static()
-                .unwrap_or("?")
-                .rsplit('/')
-                .next()
-                .unwrap(),
-            record.line().unwrap_or(0),
-            record.args()
-        );
-
         // escape interior NUL bytes instead of dropping the message, so that
         // data containing NUL bytes cannot suppress a log message
-        let c_text = CString::new(text.replace('\0', "\\0")).unwrap_or_default();
+        let c_text = CString::new(format_message(record).replace('\0', "\\0")).unwrap_or_default();
 
         let _dlt_return_value = unsafe { libdlt::dlt_log_string(self.ctx, level, c_text.as_ptr()) };
         // not much we can do here in case of error
     }
 
     fn flush(&self) {}
+}
+
+/// Formats a log record as `[file:line] message`, with the file name stripped of its path.
+fn format_message(record: &Record) -> String {
+    // use `file()` instead of `file_static()`, as records created at runtime, e.g. by log
+    // bridges, only provide a non-static file name
+    format!(
+        "[{}:{}] {}",
+        record.file().unwrap_or("?").rsplit('/').next().unwrap(),
+        record.line().unwrap_or(0),
+        record.args()
+    )
 }
 
 #[cfg(test)]
@@ -394,5 +394,53 @@ mod tests {
 
         // just ensure that log does not panic
         logger.log(&record);
+    }
+
+    #[test]
+    fn test_format_message_static_file() {
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file_static(Some("src/static.rs"))
+            .line(Some(42))
+            .build();
+
+        assert_eq!(format_message(&record), "[static.rs:42] message");
+    }
+
+    #[test]
+    fn test_format_message_non_static_file() {
+        // file name only known at runtime, as provided by log bridges
+        let file = String::from("src/dynamic.rs");
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file(Some(&file))
+            .line(Some(7))
+            .build();
+
+        assert_eq!(format_message(&record), "[dynamic.rs:7] message");
+    }
+
+    #[test]
+    fn test_format_message_empty_values() {
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file(None)
+            .line(None)
+            .build();
+
+        assert_eq!(format_message(&record), "[?:0] message");
+    }
+
+    #[test]
+    fn test_format_message_paths() {
+        for (file, expected) in [("/my/test/path", "path"), ("path/", ""), ("/", "")] {
+            let record = Record::builder()
+                .args(format_args!("message"))
+                .file(Some(file))
+                .line(Some(1))
+                .build();
+
+            assert_eq!(format_message(&record), format!("[{}:1] message", expected));
+        }
     }
 }
