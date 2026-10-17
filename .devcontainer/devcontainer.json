@@ -11,6 +11,13 @@
     },
     "ghcr.io/devcontainers/features/github-cli:1.1.3": {}
   },
+  "mounts": [
+    "source=dlt_log-rs-claude-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=dlt_log-rs-gh-${devcontainerId},target=/home/vscode/.config/gh,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
   "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
   "postStartCommand": "./.devcontainer/postStartCommand.sh",
   "customizations": {
