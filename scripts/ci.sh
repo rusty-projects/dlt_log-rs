@@ -9,7 +9,7 @@ cargo --version
 echo "::endgroup::"
 
 echo "::group::pre-commit"
-pre-commit run
+pre-commit run --all-files
 echo "::endgroup::"
 
 echo "::group::building"
