@@ -11,7 +11,8 @@ This project uses a devcontainer to define the build environment.
 You can use GitHub Codespaces or the Visual Studio Code Remote - Containers extension to open the project in a containerized environment.
 
 In case you want to set up the environment manually, you need to have a standard Rust development environment.
-Additionally, please install the tools listed in [onCreateCommand.sh](.devcontainer/onCreateCommand.sh).
+Additionally, please install the tools listed in the [Dockerfile](.devcontainer/Dockerfile).
+Code coverage requires a nightly toolchain with the `llvm-tools` component, see the rust feature in [devcontainer.json](.devcontainer/devcontainer.json).
 
 ## Building and testing
 Use standard cargo commands to build and test the project.

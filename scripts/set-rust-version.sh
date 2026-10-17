@@ -1,28 +1,30 @@
 #!/bin/bash
 set -eu
 VERSION=$1
+CONFIG=.devcontainer/devcontainer.json
+TOOLCHAIN_FEATURE=./features/rust-toolchain
 
-FEATURE=$(jq -r '.features | keys[] | select(startswith("ghcr.io/devcontainers/features/rust"))' .devcontainer/devcontainer.json)
+RUST_FEATURE=$(jq -r '.features | keys[] | select(startswith("ghcr.io/devcontainers/features/rust:"))' "$CONFIG")
 
-# check that feature starts with ghcr.io/devcontainers/features/rust
-if [[ $FEATURE != ghcr.io/devcontainers/features/rust* ]]; then
-  echo "Feature does not start with ghcr.io/devcontainers/features/rust"
+if [ -z "$RUST_FEATURE" ]; then
+  echo "Feature ghcr.io/devcontainers/features/rust not found in $CONFIG"
   exit 1
 fi
 
-# For beta and nightly, use latest as the base and install the channel via rustup
+# The rust feature only supports versions and dated nightlies. For the beta
+# and nightly channels, install latest stable with the rust feature and let
+# the local rust-toolchain feature install the channel on top.
 if [[ "$VERSION" == "beta" || "$VERSION" == "nightly" ]]; then
-  # Use latest for the devcontainer feature, we'll install beta/nightly via rustup in onCreateCommand
-  jq --arg FEATURE "$FEATURE" --arg VERSION "latest" '.features.[$FEATURE].version = $VERSION' .devcontainer/devcontainer.json > temp.json
-  mv temp.json .devcontainer/devcontainer.json
-
-  # Create a marker file to indicate which channel to install
-  echo "$VERSION" > .devcontainer/.rust-channel
+  RUST_VERSION=latest
+  TOOLCHAIN=$VERSION
 else
-  # For specific versions, use them directly
-  jq --arg FEATURE "$FEATURE" --arg VERSION "$VERSION" '.features.[$FEATURE].version = $VERSION' .devcontainer/devcontainer.json > temp.json
-  mv temp.json .devcontainer/devcontainer.json
-
-  # Remove any existing channel marker
-  rm -f .devcontainer/.rust-channel
+  RUST_VERSION=$VERSION
+  TOOLCHAIN=""
 fi
+
+jq --arg RUST_FEATURE "$RUST_FEATURE" --arg RUST_VERSION "$RUST_VERSION" \
+  --arg TOOLCHAIN_FEATURE "$TOOLCHAIN_FEATURE" --arg TOOLCHAIN "$TOOLCHAIN" \
+  '.features[$RUST_FEATURE].version = $RUST_VERSION
+   | .features[$TOOLCHAIN_FEATURE].toolchain = $TOOLCHAIN' \
+  "$CONFIG" > temp.json
+mv temp.json "$CONFIG"
