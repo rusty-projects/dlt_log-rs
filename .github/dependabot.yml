@@ -1,22 +1,39 @@
 version: 2
+multi-ecosystem-groups:
+  devcontainer:
+    schedule:
+      interval: "weekly"
 updates:
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(deps)"
   - package-ecosystem: "devcontainers"
     directory: "/"
-    schedule:
-      interval: "weekly"
+    patterns: ["*"]
+    multi-ecosystem-group: "devcontainer"
+    commit-message:
+      prefix: "chore(deps)"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      github-actions:
+        patterns: ["*"]
   - package-ecosystem: "docker"
     directory: "/.devcontainer"
-    schedule:
-      interval: "weekly"
+    patterns: ["*"]
+    multi-ecosystem-group: "devcontainer"
+    commit-message:
+      prefix: "chore(deps)"
   - package-ecosystem: "pip"
     directory: "/.devcontainer"
-    schedule:
-      interval: "weekly"
+    patterns: ["*"]
+    multi-ecosystem-group: "devcontainer"
+    commit-message:
+      prefix: "chore(deps)"
