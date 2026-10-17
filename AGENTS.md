@@ -67,6 +67,17 @@ ALWAYS test actual functionality after making changes:
 ## Commit Messages
 
 - First line shall have no more than 50 characters and summarize the whole commit.
+- First line shall follow [Conventional Commits](https://www.conventionalcommits.org/)
+  (`<type>[optional scope][!]: <description>`), because release-plz uses
+  the type to sort entries into `CHANGELOG.md` sections. The description
+  becomes the changelog entry, so write it for crate users.
+  - `feat`: new user-facing functionality (`feat!` for breaking changes)
+  - `fix`: bug fix in the crate
+  - `docs`, `perf`, `refactor`, `test`: as named
+  - `ci`, `build`, `chore`: CI workflows, devcontainer, tooling
+- PRs are squash-merged, so the PR title shall follow the same Conventional
+   Commits format and type/scope guidance.
+- Create pull requests with the GitHub CLI (`gh pr create`).
 - Second line is blank.
 - All following lines shall have no more than 72 characters.
 
