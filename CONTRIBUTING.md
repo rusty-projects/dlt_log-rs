@@ -24,6 +24,8 @@ See `allowlist_item` in the `bindgen` call.
 To test the connection to the DLT system, you need to start the DLT daemon.
 In the devcontainer, this is done automatically when you start the container, see [postStartCommand.sh](.devcontainer/postStartCommand.sh).
 To manually start the DLT daemon, run `./scripts/start-dlt-daemon.sh`. It only accepts connections from localhost.
+Tests that check the received messages with `dlt-receive` skip the check if the daemon is not running.
+Set `DLT_LOG_REQUIRE_DAEMON=1` to make them fail instead, as `./scripts/ci.sh` and `./scripts/coverage.sh` do.
 
 Full CI tests can be executed by calling the script `./scripts/ci.sh`.
 

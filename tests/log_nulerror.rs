@@ -1,6 +1,7 @@
+mod common;
+
 use dlt_log::init;
 use regex::Regex;
-use std::process::Command;
 
 #[test]
 fn log_test_nulerror() {
@@ -13,18 +14,8 @@ fn log_test_nulerror() {
     let marker = std::process::id();
     log::info!("before {} after {}", str_with_null, marker);
 
-    // get data
-    let dlt_receive = Command::new("timeout")
-        .arg("1")
-        .arg("dlt-receive")
-        .arg("-a")
-        .arg("localhost")
-        .output()
-        .expect("failed to execute dlt-receive");
-
-    // dlt running?
-    if !String::from_utf8_lossy(&dlt_receive.stderr).contains("failed to connect") {
-        let stdout = String::from_utf8_lossy(&dlt_receive.stdout);
+    // get data, skip the check if the daemon is not running
+    if let Some(stdout) = common::dlt_receive() {
         let pattern = format!(r"\] before \\0TEST after {}\]", marker);
         assert!(
             Regex::new(&pattern).unwrap().is_match(&stdout),

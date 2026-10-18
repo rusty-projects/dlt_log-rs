@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu
 
+# the tests need the DLT daemon to cover the logging paths, fail if it is not running
+export DLT_LOG_REQUIRE_DAEMON=1
+
 mkdir -p target/coverage
 
 cargo llvm-cov \
