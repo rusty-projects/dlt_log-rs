@@ -18,7 +18,7 @@ echo "::endgroup::"
 
 # documentation
 echo "::group::documentation"
-cargo doc
+RUSTDOCFLAGS="-D warnings" cargo doc
 echo "::endgroup::"
 
 # linting

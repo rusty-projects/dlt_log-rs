@@ -11,10 +11,7 @@ For more information about DLT, see the [DLT project on GitHub](https://github.c
 
 [![Build status](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rusty-projects/dlt_log-rs/actions)
 [![Crates.io](https://img.shields.io/crates/v/dlt_log.svg)](https://crates.io/crates/dlt_log)
-
-
-## Documentation
-Module documentation can be found at [docs.rs](https://docs.rs/dlt_log).
+[![Documentation](https://docs.rs/dlt_log/badge.svg)](https://docs.rs/dlt_log)
 
 ## Dependencies
 At least rust version 1.82 is required to build this crate.
@@ -147,6 +144,13 @@ for (i, chunk) in data.as_bytes().chunks(1000).enumerate() {
     log::info!("data part {}: {}", i, String::from_utf8_lossy(chunk));
 }
 ```
+
+## Errors
+
+The library defines an [`InitializeError`] enum to represent possible errors that can occur during initialization.
+These include conversion errors, logger errors, and DLT library errors.
+
+[`InitializeError`]: https://docs.rs/dlt_log/latest/dlt_log/enum.InitializeError.html
 
 ## License
 
