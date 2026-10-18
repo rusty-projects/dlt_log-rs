@@ -1,6 +1,3 @@
-extern crate dlt_log;
-extern crate log;
-
 fn main() {
     // initialize DLT logger, ignore errors
     let _ = dlt_log::init("TEST", "Rust tests", "EXPL", "Smoke test example");
