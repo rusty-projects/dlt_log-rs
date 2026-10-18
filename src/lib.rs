@@ -295,9 +295,7 @@ impl log::Log for DltLogger {
             Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
         };
 
-        // escape interior NUL bytes instead of dropping the message, so that
-        // data containing NUL bytes cannot suppress a log message
-        let c_text = CString::new(format_message(record).replace('\0', "\\0")).unwrap_or_default();
+        let c_text = to_c_string(format_message(record));
 
         let _dlt_return_value = unsafe { libdlt::dlt_log_string(self.ctx, level, c_text.as_ptr()) };
         // not much we can do here in case of error
@@ -318,11 +316,41 @@ fn format_message(record: &Record) -> String {
     )
 }
 
+/// Converts a message to a C string, escaping interior NUL bytes as `\0`.
+///
+/// Escaping instead of dropping the message ensures that data containing NUL bytes cannot
+/// suppress a log message. The buffer of `text` is reused, so the common case without NUL bytes
+/// does not copy the message.
+fn to_c_string(mut text: String) -> CString {
+    if text.contains('\0') {
+        text = text.replace('\0', "\\0");
+    }
+    CString::new(text).expect("NUL bytes have been escaped")
+}
+
 #[cfg(test)]
 mod tests {
     use log::Log;
 
     use super::*;
+
+    #[test]
+    fn test_to_c_string_without_nul() {
+        // spare capacity for the terminating NUL byte avoids a reallocation
+        let mut text = String::with_capacity(13);
+        text.push_str("no NUL bytes");
+        let ptr = text.as_ptr();
+        let c_text = to_c_string(text);
+        assert_eq!(c_text.to_bytes(), b"no NUL bytes");
+        // buffer is reused
+        assert_eq!(c_text.as_ptr().cast::<u8>(), ptr);
+    }
+
+    #[test]
+    fn test_to_c_string_with_nul() {
+        let c_text = to_c_string(String::from("a\0b\0"));
+        assert_eq!(c_text.to_bytes(), br"a\0b\0");
+    }
 
     #[test]
     fn test_flush() {
