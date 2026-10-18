@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1](https://github.com/rusty-projects/dlt_log-rs/compare/v1.1.0...v1.1.1) - 2026-10-18
+
+### Other
+
+- list supported DLT versions, tested in CI ([#168](https://github.com/rusty-projects/dlt_log-rs/pull/168))
+
 ## [1.1.0](https://github.com/rusty-projects/dlt_log-rs/compare/v1.0.1...v1.1.0) - 2026-10-18
 
 ### Added
