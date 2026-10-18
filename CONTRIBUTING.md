@@ -29,6 +29,13 @@ Set `DLT_LOG_REQUIRE_DAEMON=1` to make them fail instead, as `./scripts/ci.sh` a
 
 Full CI tests can be executed by calling the script `./scripts/ci.sh`.
 
+The devcontainer uses the DLT version packaged in Ubuntu.
+To test against another version, run `./scripts/install-dlt-daemon.sh <revision>` with a git revision of [COVESA/dlt-daemon](https://github.com/COVESA/dlt-daemon), e.g. `v3.0.0` or `master`.
+It removes the DLT packages and installs a build of that revision instead; rebuild the container to get the packaged version back.
+CI does this for the versions listed in [dlt-versions.yml](.github/workflows/dlt-versions.yml), pinned to the commit hashes of their tags, and nightly for `master`.
+Further arguments of the script are patch files applied before building; CI uses them for upstream bugs that are fixed after a release, see [scripts/patches/](scripts/patches/).
+When adding a version there, also add it to the list of supported DLT versions in [README.md](README.md).
+
 ## Code coverage
 To update the code coverage data, run `./scripts/coverage.sh`.
 In Visual Studio Code, you can use the `ryanluker.vscode-coverage-gutters` extension to display the coverage information in the editor.

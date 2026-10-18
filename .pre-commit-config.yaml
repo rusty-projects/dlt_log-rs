@@ -17,6 +17,8 @@ repos:
       - id: mixed-line-ending
         args: [ --fix=lf ]
       - id: trailing-whitespace
+        # empty context lines of patches consist of a single space
+        exclude: \.patch$
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f # frozen: v1.31.1

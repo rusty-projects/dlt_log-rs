@@ -44,6 +44,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Complete CI Validation
 - **Full CI**: `./scripts/ci.sh`
 - The CI script runs pre-commit, build, doc, clippy, fmt check, tests without and with daemon, and the example in sequence.
+- **Other DLT versions**: `./scripts/install-dlt-daemon.sh <revision>` (commit hash, or a tag or branch like `v3.0.0` or `master`) removes the DLT deb packages and installs a build of that git revision of [COVESA/dlt-daemon](https://github.com/COVESA/dlt-daemon) to `/usr` instead. Further arguments are patch files applied before building (`scripts/patches/`, for upstream bugs fixed after a release). This changes the container; rebuild it to get the packaged version back.
 
 ## Validation Scenarios
 
@@ -105,12 +106,15 @@ ALWAYS test actual functionality after making changes:
 │   ├── ci.sh             # Complete CI validation script
 │   ├── coverage.sh       # Coverage report generation and 100% check
 │   ├── start-dlt-daemon.sh # Starts dlt-daemon bound to localhost
+│   ├── install-dlt-daemon.sh # Replaces the DLT packages with a build of an upstream git revision (used by CI)
+│   ├── patches/          # Backported upstream DLT fixes applied by CI (see README, supported DLT versions)
 │   ├── dlt.conf          # dlt-daemon configuration used by start-dlt-daemon.sh
 │   └── set-rust-version.sh # Sets the Rust toolchain in devcontainer.json (used by CI matrix)
 ├── .github/
 │   ├── dependabot.yml
 │   └── workflows/
 │       ├── ci.yml          # Runs scripts/ci.sh in devcontainer for Rust 1.82, latest, beta, nightly
+│       ├── dlt-versions.yml # Runs scripts/ci.sh for upstream DLT versions (pinned commits), master nightly
 │       ├── coverage.yml    # Runs scripts/coverage.sh in devcontainer
 │       ├── audit.yml       # cargo audit (security advisories)
 │       └── release-plz.yml # Release PRs and publishing to crates.io
