@@ -14,7 +14,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Build Process
 - **Build**: `cargo build`
-- **Documentation**: `cargo doc`
+- **Documentation**: `RUSTDOCFLAGS="-D warnings" cargo doc` (crate docs are included from `README.md`)
 - **Linting**: `cargo clippy --all-targets -- -D warnings`
 - **Format check**: `cargo fmt -- --check`
 - **Pre-commit hooks**: `pre-commit run` (generic file checks, `zizmor` for GitHub Actions security, `cargo fmt` and `cargo clippy`, see `.pre-commit-config.yaml`)
@@ -87,7 +87,7 @@ ALWAYS test actual functionality after making changes:
 ### Repository Structure
 ```
 .
-├── README.md             # Main documentation with usage examples (mirrors crate docs in src/lib.rs)
+├── README.md             # Main documentation with usage examples, included as crate docs in src/lib.rs
 ├── CONTRIBUTING.md       # Contributor setup and workflow
 ├── CHANGELOG.md          # Maintained by release-plz
 ├── Cargo.toml            # Project configuration, dependencies, metadata
