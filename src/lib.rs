@@ -7,6 +7,7 @@ use log::{Level, Metadata, Record, SetLoggerError};
 use std::ffi::{CString, NulError};
 use std::fmt;
 use std::ptr::null_mut;
+use std::sync::atomic::{AtomicI8, Ordering};
 use std::sync::{Mutex, PoisonError};
 
 /// this module includes the generated bindings for the DLT library
@@ -157,7 +158,7 @@ pub fn init(
     }
     *initialized = true;
 
-    // set max level; DLT system takes care on filtering
+    // set max level; the DLT log level can change at runtime, so the logger checks it on each call
     log::set_max_level(log::STATIC_MAX_LEVEL);
 
     Ok(())
@@ -178,20 +179,50 @@ struct DltLogger {
 unsafe impl Send for DltLogger {}
 unsafe impl Sync for DltLogger {}
 
+impl DltLogger {
+    /// Checks whether DLT is going to log messages of `level` for the context of this logger.
+    ///
+    /// This is the logic of `dlt_user_is_logLevel_enabled`, which is a `static inline` function
+    /// in the DLT header and thus not available through the bindings.
+    fn is_level_enabled(&self, level: libdlt::DltLogLevelType) -> bool {
+        if self.ctx.is_null() {
+            return false;
+        }
+        // SAFETY: `ctx` points to a registered context, which is never unregistered
+        let log_level_ptr = unsafe { (*self.ctx).log_level_ptr };
+        if log_level_ptr.is_null() {
+            return false;
+        }
+        // SAFETY: DLT allocates the log level of a context once at registration and updates it
+        // from its receiver thread, so read it atomically
+        let log_level = unsafe { AtomicI8::from_ptr(log_level_ptr) }.load(Ordering::Relaxed);
+        // `level` is never `DLT_LOG_OFF`, as it is converted from a `log::Level`
+        level as i8 <= log_level
+    }
+}
+
+/// Converts a `log` level to the corresponding DLT log level.
+fn dlt_level(level: Level) -> libdlt::DltLogLevelType {
+    match level {
+        Level::Error => libdlt::DltLogLevelType::DLT_LOG_ERROR,
+        Level::Warn => libdlt::DltLogLevelType::DLT_LOG_WARN,
+        Level::Info => libdlt::DltLogLevelType::DLT_LOG_INFO,
+        Level::Debug => libdlt::DltLogLevelType::DLT_LOG_DEBUG,
+        Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
+    }
+}
+
 impl log::Log for DltLogger {
-    fn enabled(&self, _metadata: &Metadata) -> bool {
-        // will be handled inside DLT
-        true
+    fn enabled(&self, metadata: &Metadata) -> bool {
+        self.is_level_enabled(dlt_level(metadata.level()))
     }
 
     fn log(&self, record: &Record) {
-        let level = match record.level() {
-            Level::Error => libdlt::DltLogLevelType::DLT_LOG_ERROR,
-            Level::Warn => libdlt::DltLogLevelType::DLT_LOG_WARN,
-            Level::Info => libdlt::DltLogLevelType::DLT_LOG_INFO,
-            Level::Debug => libdlt::DltLogLevelType::DLT_LOG_DEBUG,
-            Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
-        };
+        let level = dlt_level(record.level());
+        // skip formatting of messages that DLT would drop
+        if !self.is_level_enabled(level) {
+            return;
+        }
 
         let c_text = to_c_string(format_message(record));
 
@@ -258,16 +289,61 @@ mod tests {
     }
 
     #[test]
-    fn test_enabled() {
+    fn test_enabled_without_context() {
         let logger = DltLogger { ctx: null_mut() };
 
-        // always needs be enabled as this is handled by DLT
-        let metadata = Metadata::builder().level(Level::max()).build();
+        let metadata = Metadata::builder().level(Level::Error).build();
+        assert!(!logger.enabled(&metadata));
+    }
+
+    #[test]
+    fn test_enabled_without_log_level() {
+        // context that is not registered with DLT
+        let mut ctx = libdlt::DltContext::default();
+        let logger = DltLogger { ctx: &mut ctx };
+
+        let metadata = Metadata::builder().level(Level::Error).build();
+        assert!(!logger.enabled(&metadata));
+    }
+
+    #[test]
+    fn test_enabled_levels() {
+        let mut log_level = libdlt::DltLogLevelType::DLT_LOG_INFO as i8;
+        let mut ctx = libdlt::DltContext {
+            log_level_ptr: &mut log_level,
+            ..Default::default()
+        };
+        let logger = DltLogger { ctx: &mut ctx };
+
+        let enabled = |level| logger.enabled(&Metadata::builder().level(level).build());
+        assert!(enabled(Level::Error));
+        assert!(enabled(Level::Warn));
+        assert!(enabled(Level::Info));
+        assert!(!enabled(Level::Debug));
+        assert!(!enabled(Level::Trace));
+    }
+
+    #[test]
+    fn test_enabled_log_level_change() {
+        let log_level = AtomicI8::new(libdlt::DltLogLevelType::DLT_LOG_OFF as i8);
+        let mut ctx = libdlt::DltContext {
+            log_level_ptr: log_level.as_ptr(),
+            ..Default::default()
+        };
+        let logger = DltLogger { ctx: &mut ctx };
+        let metadata = Metadata::builder().level(Level::Trace).build();
+        assert!(!logger.enabled(&metadata));
+
+        // DLT daemon changes the log level at runtime
+        log_level.store(
+            libdlt::DltLogLevelType::DLT_LOG_VERBOSE as i8,
+            Ordering::Relaxed,
+        );
         assert!(logger.enabled(&metadata));
     }
 
     #[test]
-    fn test_log() {
+    fn test_log_without_context() {
         let logger = DltLogger { ctx: null_mut() };
 
         let record = Record::builder()
@@ -277,67 +353,7 @@ mod tests {
             .line(Some(42))
             .build();
 
-        // just ensure that log does not panic
-        logger.log(&record);
-    }
-
-    #[test]
-    fn test_log_empty_values() {
-        let logger = DltLogger { ctx: null_mut() };
-
-        let record = Record::builder()
-            .args(format_args!(""))
-            .level(Level::Info)
-            .file(None)
-            .line(None)
-            .build();
-
-        // just ensure that log does not panic
-        logger.log(&record);
-    }
-
-    #[test]
-    fn test_log_paths() {
-        let logger = DltLogger { ctx: null_mut() };
-
-        let record = Record::builder()
-            .args(format_args!(""))
-            .level(Level::Info)
-            .file(Some("/my/test/path"))
-            .line(None)
-            .build();
-
-        // just ensure that log does not panic
-        logger.log(&record);
-    }
-
-    #[test]
-    fn test_log_paths_2() {
-        let logger = DltLogger { ctx: null_mut() };
-
-        let record = Record::builder()
-            .args(format_args!(""))
-            .level(Level::Info)
-            .file(Some("path/"))
-            .line(None)
-            .build();
-
-        // just ensure that log does not panic
-        logger.log(&record);
-    }
-
-    #[test]
-    fn test_log_paths_3() {
-        let logger = DltLogger { ctx: null_mut() };
-
-        let record = Record::builder()
-            .args(format_args!(""))
-            .level(Level::Info)
-            .file(Some("/"))
-            .line(None)
-            .build();
-
-        // just ensure that log does not panic
+        // message is dropped without panic
         logger.log(&record);
     }
 

@@ -30,6 +30,7 @@ Always reference these instructions first and fallback to search or bash command
   - Start daemon (if not already running, check with `pgrep dlt-daemon`): `./scripts/start-dlt-daemon.sh`
   - Run all tests: `cargo test`
   - `tests/log.rs` and `tests/log_threads.rs` use `dlt-receive` (package `dlt-tools`) to verify that messages reach the daemon; `tests/log_threads.rs` logs from several threads at once.
+  - `tests/log_level.rs` checks that `log::log_enabled!` follows the DLT log level (default `info`) and that messages of disabled levels are not formatted, with and without daemon.
 
 ### Examples and Validation
 - **Run example**: `cargo run --example simple`

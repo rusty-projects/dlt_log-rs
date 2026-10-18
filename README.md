@@ -94,6 +94,17 @@ For example, to enable all log levels, set the `DLT_INITIAL_LOG_LEVEL` environme
 DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple
 ```
 
+The log level of a context can also be changed at runtime, e.g. with the DLT viewer.
+The logger checks the current DLT log level of its context for each message, so messages of disabled levels are dropped before they are formatted.
+[`log::log_enabled!`](https://docs.rs/log/latest/log/macro.log_enabled.html) returns whether a level is enabled in DLT, e.g. to skip expensive computations:
+
+```rust
+if log::log_enabled!(log::Level::Debug) {
+    let state = "expensive debug output";
+    log::debug!("state: {}", state);
+}
+```
+
 ## Logging to console
 
 By default, the log messages are sent to the DLT daemon.
