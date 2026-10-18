@@ -145,10 +145,20 @@ for (i, chunk) in data.as_bytes().chunks(1000).enumerate() {
 
 The library defines an [`InitializeError`] enum to represent possible errors that can occur during initialization.
 These include conversion errors, logger errors, and DLT library errors.
+[`InitializeError`] implements [`std::error::Error`], so it can be propagated with `?`, e.g. in functions returning `Result<_, Box<dyn std::error::Error>>`:
+
+```rust
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dlt_log::init("APID", "Application Description", "CTID", "Context Description")?;
+    log::info!("This is an info message");
+    Ok(())
+}
+```
 */
 
 use log::{Level, Metadata, Record, SetLoggerError};
 use std::ffi::{CString, NulError};
+use std::fmt;
 use std::ptr::null_mut;
 use std::sync::{Mutex, PoisonError};
 
@@ -177,6 +187,30 @@ pub enum InitializeError {
     /// which provides detailed information about the specific error encountered
     /// during DLT operations.
     DltLibraryError(DltReturnValue),
+}
+
+impl fmt::Display for InitializeError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            InitializeError::ConversionError(_) => {
+                write!(f, "argument contains an interior null byte")
+            }
+            InitializeError::LoggerError(_) => write!(f, "failed to set the logger"),
+            InitializeError::DltLibraryError(value) => {
+                write!(f, "DLT library returned an error: {:?}", value)
+            }
+        }
+    }
+}
+
+impl std::error::Error for InitializeError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            InitializeError::ConversionError(err) => Some(err),
+            InitializeError::LoggerError(err) => Some(err),
+            InitializeError::DltLibraryError(_) => None,
+        }
+    }
 }
 
 impl From<NulError> for InitializeError {
