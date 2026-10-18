@@ -8,16 +8,22 @@ multi-ecosystem-groups:
 updates:
   - package-ecosystem: "cargo"
     directory: "/"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "weekly"
     commit-message:
       prefix: "chore(deps)"
   - package-ecosystem: "devcontainers"
     directory: "/"
+    cooldown:
+      default-days: 7
     patterns: ["*"]
     multi-ecosystem-group: "devcontainer"
   - package-ecosystem: "github-actions"
     directory: "/"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "weekly"
     commit-message:
@@ -27,9 +33,13 @@ updates:
         patterns: ["*"]
   - package-ecosystem: "docker"
     directory: "/.devcontainer"
+    cooldown:
+      default-days: 7
     patterns: ["*"]
     multi-ecosystem-group: "devcontainer"
   - package-ecosystem: "pip"
     directory: "/.devcontainer"
+    cooldown:
+      default-days: 7
     patterns: ["*"]
     multi-ecosystem-group: "devcontainer"

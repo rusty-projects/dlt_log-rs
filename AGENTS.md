@@ -17,7 +17,7 @@ Always reference these instructions first and fallback to search or bash command
 - **Documentation**: `cargo doc`
 - **Linting**: `cargo clippy --all-targets -- -D warnings`
 - **Format check**: `cargo fmt -- --check`
-- **Pre-commit hooks**: `pre-commit run` (generic file checks plus `cargo fmt` and `cargo clippy`, see `.pre-commit-config.yaml`)
+- **Pre-commit hooks**: `pre-commit run` (generic file checks, `zizmor` for GitHub Actions security, `cargo fmt` and `cargo clippy`, see `.pre-commit-config.yaml`)
 
 ### Testing
 **IMPORTANT**: Tests interact with the DLT daemon and require specific setup.
