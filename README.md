@@ -10,6 +10,7 @@ It provides features such as log level filtering, message formatting, and log me
 For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
 [![Build status](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rusty-projects/dlt_log-rs/actions)
+[![DLT compatibility](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/dlt-versions.yml/badge.svg?branch=main)](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/dlt-versions.yml)
 [![Crates.io](https://img.shields.io/crates/v/dlt_log.svg)](https://crates.io/crates/dlt_log)
 [![Documentation](https://docs.rs/dlt_log/badge.svg)](https://docs.rs/dlt_log)
 
@@ -27,6 +28,20 @@ sudo apt-get install libclang-dev libdlt-dev
 The integration with the DLT system is achieved through the underlying C library for DLT.
 [`bindgen`](https://docs.rs/bindgen) is used to generate the FFI (Foreign Function Interface) bindings.
 The bindings are generated during the build process in order to ensure that the Rust code remains in sync with the system’s DLT library.
+
+### Supported DLT versions
+
+CI tests this crate against the following versions of [dlt-daemon](https://github.com/COVESA/dlt-daemon), using the library, the daemon and `dlt-receive` of the same version:
+
+| DLT version | Tested in CI |
+|-------------|--------------|
+| v2.18.9     | ✅ |
+| v2.18.10    | ✅ (also as Ubuntu 24.04 package) |
+| v2.18.11    | ✅ |
+| v3.0.0      | ✅ |
+
+Version 3 of the DLT library is not binary compatible with version 2.
+Rebuild your application when you switch between them; the bindings are then generated from the new headers.
 
 ## Example usage
 

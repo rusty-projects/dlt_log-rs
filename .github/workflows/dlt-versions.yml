@@ -1,0 +1,52 @@
+name: DLT compatibility
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 6 * * *'
+
+permissions:
+  contents: read
+
+# Cancel outdated runs of a pull request; other runs get a unique group.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  # The CI workflow tests against the DLT version packaged in Ubuntu. This
+  # workflow replaces it with builds of upstream versions, pinned to the
+  # commits of their tags. Keep the list in README.md in sync.
+  dlt-daemon:
+    name: dlt-daemon ${{ matrix.dlt.version }}
+    strategy:
+      matrix:
+        dlt:
+          - version: v2.18.9
+            revision: 9a2312d3512a27620d41b9a325338b6e7b3d42de
+          - version: v2.18.10
+            revision: 0f2d4cfffada6f8448a2cb27995b38eb4271044f
+          - version: v2.18.11
+            revision: 6a66ac510c0b28d6064184b73f5df0c45cf51ae7
+          - version: v3.0.0
+            revision: f595ea29d1007ca1c3b2d1fd3a88adf7d3db6320
+      fail-fast: false
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+
+    - name: Build and test
+      uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
+      with:
+        runCmd: ./scripts/install-dlt-daemon.sh ${{ matrix.dlt.revision }} && ./scripts/ci.sh
