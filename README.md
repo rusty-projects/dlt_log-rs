@@ -18,11 +18,14 @@ At least rust version 1.82 is required to build this crate.
 This is caused by latest `bindgen` version which is not compatible with older rust versions, see [bindgen issue #3052](https://github.com/rust-lang/rust-bindgen/issues/3052).
 
 You need to have `libclang-dev` installed on your system to run the binding generation and `libdlt-dev` to link against the DLT library.
+`pkg-config` is optional, but recommended: if it is installed, the build uses the include and library paths of the DLT pkg-config file `automotive-dlt.pc`, otherwise it relies on the default paths of the compiler and linker.
 On Ubuntu, you can install that with the following command:
 
 ```bash
-sudo apt-get install libclang-dev libdlt-dev
+sudo apt-get install libclang-dev libdlt-dev pkg-config
 ```
+
+If the DLT library is installed in a non-standard location, add the directory containing `automotive-dlt.pc` to `PKG_CONFIG_PATH`.
 
 The integration with the DLT system is achieved through the underlying C library for DLT.
 [`bindgen`](https://docs.rs/bindgen) is used to generate the FFI (Foreign Function Interface) bindings.
@@ -76,12 +79,19 @@ rustflags = [
 ]
 ```
 
-Bindgen needs to know the sysroot path to find the DLT headers, so set the `BINDGEN_EXTRA_CLANG_ARGS` environment variable before building the project:
+Bindgen needs to know the sysroot path to find the system headers, so set the `BINDGEN_EXTRA_CLANG_ARGS` environment variable before building the project.
+To find the DLT library with pkg-config, point `PKG_CONFIG_SYSROOT_DIR` and `PKG_CONFIG_LIBDIR` to the sysroot.
+pkg-config then prefixes the include and library paths of the DLT library with the sysroot:
 
 ```bash
-export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=/opt/poky/5.1.2/sysroots/cortexa57-poky-linux"
+SYSROOT=/opt/poky/5.1.2/sysroots/cortexa57-poky-linux
+export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$SYSROOT"
+export PKG_CONFIG_SYSROOT_DIR="$SYSROOT"
+export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig:$SYSROOT/usr/share/pkgconfig"
 cargo build --release --target aarch64-unknown-linux-gnu
 ```
+
+Without `PKG_CONFIG_SYSROOT_DIR`, pkg-config is not used for cross-compilation, and the DLT library is searched in the default paths of the sysroot.
 
 ## Log levels
 

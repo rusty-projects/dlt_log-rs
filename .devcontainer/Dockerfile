@@ -8,10 +8,11 @@ RUN mkdir -p /home/vscode/.claude /home/vscode/.config/gh \
     && chown vscode:vscode /home/vscode/.claude /home/vscode/.config \
         /home/vscode/.config/gh
 
-# DLT daemon, library and tools, bindgen requirements and pip for pre-commit
+# DLT daemon, library and tools, bindgen requirements, pkg-config to find
+# the DLT library and pip for pre-commit
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        dlt-daemon libdlt-dev dlt-tools libclang-dev python3-pip \
+        dlt-daemon libdlt-dev dlt-tools libclang-dev pkgconf python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # cargo-llvm-cov for coverage measurement, pinned and checksum-verified

@@ -2,10 +2,29 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // system library is libdlt
-    println!("cargo:rustc-link-lib=dlt");
+    let mut builder = bindgen::Builder::default();
 
-    let bindings = bindgen::Builder::default()
+    // find libdlt with pkg-config, which also emits the link flags
+    match pkg_config::probe_library("automotive-dlt") {
+        Ok(library) => {
+            for path in &library.include_paths {
+                builder = builder.clang_arg(format!("-I{}", path.display()));
+            }
+            for (name, value) in &library.defines {
+                builder = builder.clang_arg(match value {
+                    Some(value) => format!("-D{name}={value}"),
+                    None => format!("-D{name}"),
+                });
+            }
+        }
+        Err(error) => {
+            // fall back to default include and library paths
+            eprintln!("pkg-config failed, using default paths: {error}");
+            println!("cargo:rustc-link-lib=dlt");
+        }
+    }
+
+    let bindings = builder
         .header("src/libdlt_wrapper.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         // list of methods we use

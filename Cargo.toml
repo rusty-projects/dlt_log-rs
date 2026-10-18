@@ -12,6 +12,7 @@ exclude = ["doc/*.png"]
 
 [build-dependencies]
 bindgen = "0.73"
+pkg-config = "0.3.34"
 
 [dependencies]
 log = { version = "0.4", features = ["std"] }

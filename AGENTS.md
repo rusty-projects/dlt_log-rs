@@ -91,7 +91,7 @@ ALWAYS test actual functionality after making changes:
 ├── CONTRIBUTING.md       # Contributor setup and workflow
 ├── CHANGELOG.md          # Maintained by release-plz
 ├── Cargo.toml            # Project configuration, dependencies, metadata
-├── build.rs              # Bindgen configuration for FFI generation (allowlist of used DLT functions)
+├── build.rs              # pkg-config probe for libdlt and bindgen configuration (allowlist of used DLT functions)
 ├── src/
 │   ├── lib.rs            # Main library code with DLT logger implementation and unit tests
 │   ├── libdlt.rs         # Module that includes the generated bindings from OUT_DIR
@@ -118,7 +118,7 @@ ALWAYS test actual functionality after making changes:
 
 ### Key Project Information
 - **Language**: Rust (minimum version 1.82, `rust-version` in `Cargo.toml`, tested in CI)
-- **Dependencies**: libclang-dev (for bindgen), libdlt-dev (for DLT library), dlt-daemon and dlt-tools (for testing)
+- **Dependencies**: libclang-dev (for bindgen), libdlt-dev (for DLT library), pkgconf (optional, `build.rs` finds libdlt via `automotive-dlt.pc` and falls back to default paths), dlt-daemon and dlt-tools (for testing)
 - **Build system**: Cargo with custom build.rs for FFI binding generation
 - **Testing**: Unit tests + integration tests requiring DLT daemon
 - **Coverage requirement**: 100% coverage (enforced in CI)
