@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0](https://github.com/rusty-projects/dlt_log-rs/compare/v1.0.1...v1.1.0) - 2026-10-18
+
+### Added
+
+- implement Display and Error for InitializeError ([#163](https://github.com/rusty-projects/dlt_log-rs/pull/163))
+
+### Fixed
+
+- keep first logger intact on repeated init ([#136](https://github.com/rusty-projects/dlt_log-rs/pull/136))
+- show file name of non-static log records ([#135](https://github.com/rusty-projects/dlt_log-rs/pull/135))
+- *(deps)* correct Dependabot group config ([#129](https://github.com/rusty-projects/dlt_log-rs/pull/129))
+
+### Other
+
+- fail without DLT daemon if required ([#165](https://github.com/rusty-projects/dlt_log-rs/pull/165))
+- use README as crate documentation ([#164](https://github.com/rusty-projects/dlt_log-rs/pull/164))
+- document the DLT message length limit ([#162](https://github.com/rusty-projects/dlt_log-rs/pull/162))
+- avoid copying messages without NUL bytes ([#161](https://github.com/rusty-projects/dlt_log-rs/pull/161))
+- use unique markers in log integration tests ([#160](https://github.com/rusty-projects/dlt_log-rs/pull/160))
+- log from multiple threads concurrently ([#159](https://github.com/rusty-projects/dlt_log-rs/pull/159))
+- harden GitHub Actions workflows ([#158](https://github.com/rusty-projects/dlt_log-rs/pull/158))
+- lint all targets and cancel outdated runs ([#157](https://github.com/rusty-projects/dlt_log-rs/pull/157))
+- remove extern crate from example ([#156](https://github.com/rusty-projects/dlt_log-rs/pull/156))
+- *(deps)* Bump the "devcontainer" group with 2 updates across multiple ecosystems ([#130](https://github.com/rusty-projects/dlt_log-rs/pull/130))
+- run pre-commit hooks on all files ([#134](https://github.com/rusty-projects/dlt_log-rs/pull/134))
+- drop onCreateCommand from devcontainer ([#133](https://github.com/rusty-projects/dlt_log-rs/pull/133))
+- drop devcontainerId from volume names ([#132](https://github.com/rusty-projects/dlt_log-rs/pull/132))
+- persist Claude and gh logins in devcontainer ([#131](https://github.com/rusty-projects/dlt_log-rs/pull/131))
+- *(deps)* bump release-plz/action from 0.5.139 to 0.5.142 ([#121](https://github.com/rusty-projects/dlt_log-rs/pull/121))
+- unify repo automation conventions ([#127](https://github.com/rusty-projects/dlt_log-rs/pull/127))
+
 ## [1.0.1](https://github.com/rusty-projects/dlt_log-rs/compare/v1.0.0...v1.0.1) - 2026-10-04
 
 ### Other
