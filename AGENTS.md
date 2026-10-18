@@ -113,7 +113,7 @@ ALWAYS test actual functionality after making changes:
 │   ├── dependabot.yml
 │   └── workflows/
 │       ├── ci.yml          # Runs scripts/ci.sh in devcontainer for Rust 1.82, latest, beta, nightly
-│       ├── dlt-versions.yml # Runs scripts/ci.sh for upstream DLT versions (pinned commits)
+│       ├── dlt-versions.yml # Runs scripts/ci.sh for upstream DLT versions (pinned commits), master nightly
 │       ├── coverage.yml    # Runs scripts/coverage.sh in devcontainer
 │       ├── audit.yml       # cargo audit (security advisories)
 │       └── release-plz.yml # Release PRs and publishing to crates.io

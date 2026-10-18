@@ -36,9 +36,10 @@ CI tests this crate against the following versions of [dlt-daemon](https://githu
 | DLT version | Tested in CI |
 |-------------|--------------|
 | v2.18.9     | ✅ |
-| v2.18.10    | ✅ (also as Ubuntu 24.04 package) |
+| v2.18.10    | ✅ |
 | v2.18.11    | ✅ |
 | v3.0.0      | ✅ |
+| `master`    | nightly, to detect upcoming changes |
 
 Version 3 of the DLT library is not binary compatible with version 2.
 Rebuild your application when you switch between them; the bindings are then generated from the new headers.

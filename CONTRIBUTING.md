@@ -32,7 +32,7 @@ Full CI tests can be executed by calling the script `./scripts/ci.sh`.
 The devcontainer uses the DLT version packaged in Ubuntu.
 To test against another version, run `./scripts/install-dlt-daemon.sh <revision>` with a git revision of [COVESA/dlt-daemon](https://github.com/COVESA/dlt-daemon), e.g. `v3.0.0` or `master`.
 It removes the DLT packages and installs a build of that revision instead; rebuild the container to get the packaged version back.
-CI does this for the versions listed in [dlt-versions.yml](.github/workflows/dlt-versions.yml), pinned to the commit hashes of their tags.
+CI does this for the versions listed in [dlt-versions.yml](.github/workflows/dlt-versions.yml), pinned to the commit hashes of their tags, and nightly for `master`.
 When adding a version there, also add it to the list of supported DLT versions in [README.md](README.md).
 
 ## Code coverage
