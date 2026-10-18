@@ -23,7 +23,7 @@ echo "::endgroup::"
 
 # linting
 echo "::group::linting"
-cargo clippy -- -D warnings
+cargo clippy --all-targets -- -D warnings
 cargo fmt -- --check
 echo "::endgroup::"
 

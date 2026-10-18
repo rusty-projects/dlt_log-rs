@@ -15,7 +15,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Build Process
 - **Build**: `cargo build`
 - **Documentation**: `cargo doc`
-- **Linting**: `cargo clippy -- -D warnings`
+- **Linting**: `cargo clippy --all-targets -- -D warnings`
 - **Format check**: `cargo fmt -- --check`
 - **Pre-commit hooks**: `pre-commit run` (generic file checks plus `cargo fmt` and `cargo clippy`, see `.pre-commit-config.yaml`)
 
@@ -61,7 +61,7 @@ ALWAYS test actual functionality after making changes:
 
 4. **Code quality validation**:
    - Always run `cargo fmt -- --check` before committing
-   - Always run `cargo clippy -- -D warnings` before committing
+   - Always run `cargo clippy --all-targets -- -D warnings` before committing
    - CI will fail if these checks don't pass
 
 ## Commit Messages
