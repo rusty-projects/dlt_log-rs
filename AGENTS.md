@@ -9,8 +9,8 @@ Always reference these instructions first and fallback to search or bash command
 **CRITICAL**: A cold build (bindgen + dependencies) and coverage runs can take a minute or more. NEVER CANCEL any build, test, or coverage command. Use generous timeouts (120+ seconds).
 
 ### Dependencies and Setup
-- The devcontainer (`.devcontainer/`) is the reference environment. It installs everything via `.devcontainer/onCreateCommand.sh` and starts the DLT daemon (bound to localhost) on container start via `.devcontainer/postStartCommand.sh`.
-- Outside the devcontainer, run `.devcontainer/onCreateCommand.sh` to install dependencies.
+- The devcontainer (`.devcontainer/`) is the reference environment. `.devcontainer/Dockerfile` installs the apt packages, `cargo-llvm-cov` and `pre-commit` (pinned in `.devcontainer/requirements.txt`). Rust and the GitHub CLI come from devcontainer features in `.devcontainer/devcontainer.json`, plus the local feature `.devcontainer/features/rust-toolchain` for the beta/nightly channels. It starts the DLT daemon (bound to localhost) on container start via `.devcontainer/postStartCommand.sh`.
+- Outside the devcontainer, install the tools listed in `.devcontainer/Dockerfile`. Coverage needs a nightly toolchain (for `--branch`) with the `llvm-tools` component; the devcontainer pins one in the rust feature.
 
 ### Build Process
 - **Build**: `cargo build`
@@ -102,6 +102,7 @@ ALWAYS test actual functionality after making changes:
 │   ├── ci.sh             # Complete CI validation script
 │   ├── coverage.sh       # Coverage report generation and 100% check
 │   ├── start-dlt-daemon.sh # Starts dlt-daemon bound to localhost
+│   ├── dlt.conf          # dlt-daemon configuration used by start-dlt-daemon.sh
 │   └── set-rust-version.sh # Sets the Rust toolchain in devcontainer.json (used by CI matrix)
 ├── .github/
 │   ├── dependabot.yml
@@ -111,6 +112,7 @@ ALWAYS test actual functionality after making changes:
 │       ├── audit.yml       # cargo audit (security advisories)
 │       └── release-plz.yml # Release PRs and publishing to crates.io
 └── .devcontainer/        # Dev container setup for consistent environment
+    └── features/         # Local devcontainer feature rust-toolchain (beta/nightly channels)
 ```
 
 ### Key Project Information

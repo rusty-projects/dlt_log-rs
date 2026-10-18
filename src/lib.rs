@@ -132,6 +132,8 @@ These include conversion errors, logger errors, and DLT library errors.
 
 use log::{Level, Metadata, Record, SetLoggerError};
 use std::ffi::{CString, NulError};
+use std::ptr::null_mut;
+use std::sync::{Mutex, PoisonError};
 
 /// this module includes the generated bindings for the DLT library
 mod libdlt;
@@ -190,7 +192,9 @@ impl From<SetLoggerError> for InitializeError {
 /// errors include:
 ///
 /// * `ConversionError` - If there is a null byte in the provided strings.
-/// * `LoggerError` - If there is an error setting the logger.
+/// * `LoggerError` - If there is an error setting the logger, e.g. because a logger is already set,
+///   also by a previous successful call of this function. A failed call leaves no DLT state behind
+///   and does not affect an already running logger.
 /// * `DltLibraryError` - If there is an error returned by the DLT library.
 ///
 /// # Example
@@ -213,6 +217,16 @@ pub fn init(
     let c_context_id = CString::new(context_id)?;
     let c_context_description = CString::new(context_description)?;
 
+    // serialize initialization, so that concurrent calls cannot interleave their DLT
+    // registrations; a panic cannot leave the flag in an inconsistent state, so ignore poisoning
+    let mut initialized = INITIALIZED.lock().unwrap_or_else(PoisonError::into_inner);
+    if *initialized {
+        // Registering again would replace the application of the running logger, so fail before
+        // any DLT call. The global logger is set, so this returns the same error as setting it
+        // again.
+        return Err(log::set_logger(&UNUSED_LOGGER).unwrap_err().into());
+    }
+
     // register application
     let dlt_return_value =
         unsafe { libdlt::dlt_register_app(c_app_id.as_ptr(), c_app_description.as_ptr()) };
@@ -222,33 +236,40 @@ pub fn init(
 
     // create logger
     let ctx: Box<libdlt::DltContext> = Box::default();
-    let dlt_logger = DltLogger {
-        ctx: Box::into_raw(ctx),
-    };
+    let ctx = Box::into_raw(ctx);
 
     // register context
     let dlt_return_value = unsafe {
-        libdlt::dlt_register_context(
-            dlt_logger.ctx,
-            c_context_id.as_ptr(),
-            c_context_description.as_ptr(),
-        )
+        libdlt::dlt_register_context(ctx, c_context_id.as_ptr(), c_context_description.as_ptr())
     };
     if dlt_return_value != DltReturnValue::DLT_RETURN_OK {
         // context is not registered, so DLT does not use it and it can be freed
-        drop(unsafe { Box::from_raw(dlt_logger.ctx) });
+        drop(unsafe { Box::from_raw(ctx) });
+        let _ = unsafe { libdlt::dlt_unregister_app() };
         return Err(InitializeError::DltLibraryError(dlt_return_value));
     }
 
-    // set global logger; on error the context is intentionally leaked, as it stays registered
-    // with DLT
-    log::set_boxed_logger(Box::new(dlt_logger))?;
+    // set global logger; fails if another logger is already set
+    if let Err(err) = log::set_boxed_logger(Box::new(DltLogger { ctx })) {
+        // undo the registration, so that no DLT state is left behind
+        let _ = unsafe { libdlt::dlt_unregister_context(ctx) };
+        drop(unsafe { Box::from_raw(ctx) });
+        let _ = unsafe { libdlt::dlt_unregister_app() };
+        return Err(err.into());
+    }
+    *initialized = true;
 
     // set max level; DLT system takes care on filtering
     log::set_max_level(log::STATIC_MAX_LEVEL);
 
     Ok(())
 }
+
+/// Whether [`init`] has set the global logger. The mutex also serializes calls to [`init`].
+static INITIALIZED: Mutex<bool> = Mutex::new(false);
+
+/// Logger only used to obtain a [`SetLoggerError`] on repeated initialization, never set.
+static UNUSED_LOGGER: DltLogger = DltLogger { ctx: null_mut() };
 
 struct DltLogger {
     ctx: *mut libdlt::DltContext,
@@ -274,21 +295,9 @@ impl log::Log for DltLogger {
             Level::Trace => libdlt::DltLogLevelType::DLT_LOG_VERBOSE,
         };
 
-        let text = format!(
-            "[{}:{}] {}",
-            record
-                .file_static()
-                .unwrap_or("?")
-                .rsplit('/')
-                .next()
-                .unwrap(),
-            record.line().unwrap_or(0),
-            record.args()
-        );
-
         // escape interior NUL bytes instead of dropping the message, so that
         // data containing NUL bytes cannot suppress a log message
-        let c_text = CString::new(text.replace('\0', "\\0")).unwrap_or_default();
+        let c_text = CString::new(format_message(record).replace('\0', "\\0")).unwrap_or_default();
 
         let _dlt_return_value = unsafe { libdlt::dlt_log_string(self.ctx, level, c_text.as_ptr()) };
         // not much we can do here in case of error
@@ -297,10 +306,20 @@ impl log::Log for DltLogger {
     fn flush(&self) {}
 }
 
+/// Formats a log record as `[file:line] message`, with the file name stripped of its path.
+fn format_message(record: &Record) -> String {
+    // use `file()` instead of `file_static()`, as records created at runtime, e.g. by log
+    // bridges, only provide a non-static file name
+    format!(
+        "[{}:{}] {}",
+        record.file().unwrap_or("?").rsplit('/').next().unwrap(),
+        record.line().unwrap_or(0),
+        record.args()
+    )
+}
+
 #[cfg(test)]
 mod tests {
-    use std::ptr::null_mut;
-
     use log::Log;
 
     use super::*;
@@ -394,5 +413,53 @@ mod tests {
 
         // just ensure that log does not panic
         logger.log(&record);
+    }
+
+    #[test]
+    fn test_format_message_static_file() {
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file_static(Some("src/static.rs"))
+            .line(Some(42))
+            .build();
+
+        assert_eq!(format_message(&record), "[static.rs:42] message");
+    }
+
+    #[test]
+    fn test_format_message_non_static_file() {
+        // file name only known at runtime, as provided by log bridges
+        let file = String::from("src/dynamic.rs");
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file(Some(&file))
+            .line(Some(7))
+            .build();
+
+        assert_eq!(format_message(&record), "[dynamic.rs:7] message");
+    }
+
+    #[test]
+    fn test_format_message_empty_values() {
+        let record = Record::builder()
+            .args(format_args!("message"))
+            .file(None)
+            .line(None)
+            .build();
+
+        assert_eq!(format_message(&record), "[?:0] message");
+    }
+
+    #[test]
+    fn test_format_message_paths() {
+        for (file, expected) in [("/my/test/path", "path"), ("path/", ""), ("/", "")] {
+            let record = Record::builder()
+                .args(format_args!("message"))
+                .file(Some(file))
+                .line(Some(1))
+                .build();
+
+            assert_eq!(format_message(&record), format!("[{}:1] message", expected));
+        }
     }
 }

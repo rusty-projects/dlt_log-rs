@@ -1,0 +1,16 @@
+{
+  "id": "rust-toolchain",
+  "version": "1.0.0",
+  "name": "Rust toolchain",
+  "description": "Installs a Rust toolchain via rustup and makes it the default, e.g. the beta or nightly channel which the rust feature does not support",
+  "options": {
+    "toolchain": {
+      "type": "string",
+      "default": "",
+      "description": "Toolchain to install and set as default, e.g. beta or nightly. Empty keeps the toolchain of the rust feature."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/rust"
+  ]
+}

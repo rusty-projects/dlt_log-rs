@@ -7,11 +7,22 @@
     "ghcr.io/devcontainers/features/rust:1.6.0": {
       "version": "nightly-2026-10-03",
       "profile": "default",
-      "targets": ""
+      "targets": "",
+      "components": "rust-analyzer,rust-src,rustfmt,clippy,llvm-tools"
+    },
+    "./features/rust-toolchain": {
+      "toolchain": ""
     },
     "ghcr.io/devcontainers/features/github-cli:1.1.3": {}
   },
-  "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
+  "mounts": [
+    "source=dlt_log-rs-claude,target=/home/vscode/.claude,type=volume",
+    "source=dlt_log-rs-gh,target=/home/vscode/.config/gh,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "postCreateCommand": "pre-commit install",
   "postStartCommand": "./.devcontainer/postStartCommand.sh",
   "customizations": {
     "vscode": {

@@ -2,8 +2,14 @@
 set -eu
 export CARGO_TERM_COLOR=always
 
+echo "::group::toolchain"
+rustup show active-toolchain
+rustc --version
+cargo --version
+echo "::endgroup::"
+
 echo "::group::pre-commit"
-pre-commit run
+pre-commit run --all-files
 echo "::endgroup::"
 
 echo "::group::building"
