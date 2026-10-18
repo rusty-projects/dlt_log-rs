@@ -29,7 +29,7 @@ Always reference these instructions first and fallback to search or bash command
 - **Tests with DLT daemon**:
   - Start daemon (if not already running, check with `pgrep dlt-daemon`): `./scripts/start-dlt-daemon.sh`
   - Run all tests: `cargo test`
-  - `tests/log.rs` uses `dlt-receive` (package `dlt-tools`) to verify that messages reach the daemon.
+  - `tests/log.rs` and `tests/log_threads.rs` use `dlt-receive` (package `dlt-tools`) to verify that messages reach the daemon; `tests/log_threads.rs` logs from several threads at once.
 
 ### Examples and Validation
 - **Run example**: `cargo run --example simple`
