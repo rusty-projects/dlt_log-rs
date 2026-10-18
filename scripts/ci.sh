@@ -36,7 +36,7 @@ echo "::endgroup::"
 # test with running dlt-daemon
 echo "::group::test with running dlt-daemon"
 ./scripts/start-dlt-daemon.sh
-cargo test
+DLT_LOG_REQUIRE_DAEMON=1 cargo test
 echo "::endgroup::"
 
 # examples

@@ -29,7 +29,8 @@ Always reference these instructions first and fallback to search or bash command
 - **Tests with DLT daemon**:
   - Start daemon (if not already running, check with `pgrep dlt-daemon`): `./scripts/start-dlt-daemon.sh`
   - Run all tests: `cargo test`
-  - `tests/log.rs` and `tests/log_threads.rs` use `dlt-receive` (package `dlt-tools`) to verify that messages reach the daemon; `tests/log_threads.rs` logs from several threads at once.
+  - `tests/log.rs`, `tests/log_nulerror.rs`, `tests/log_threads.rs` and `tests/init_double.rs` use `dlt-receive` (package `dlt-tools`, shared helper in `tests/common/mod.rs`) to verify that messages reach the daemon; `tests/log_threads.rs` logs from several threads at once.
+  - Without daemon, these tests skip the check. `DLT_LOG_REQUIRE_DAEMON=1` makes them fail instead (set in `scripts/ci.sh` and `scripts/coverage.sh`).
 
 ### Examples and Validation
 - **Run example**: `cargo run --example simple`
@@ -99,6 +100,7 @@ ALWAYS test actual functionality after making changes:
 ├── examples/
 │   └── simple.rs         # Basic usage example showing all log levels
 ├── tests/                # Integration tests for initialization and logging
+│   └── common/mod.rs     # Shared dlt-receive helper
 ├── scripts/
 │   ├── ci.sh             # Complete CI validation script
 │   ├── coverage.sh       # Coverage report generation and 100% check
