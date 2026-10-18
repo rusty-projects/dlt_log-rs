@@ -1,0 +1,45 @@
+Fix deadlock in dlt_free() at process exit
+
+Backport of the dlt_free() part of upstream commit
+5bbc2c14e1e3e1d19e5c7cfd0f179757873a9142 (dlt_user: fix deadlock by
+stopping threads before locking dlt_mutex),
+https://github.com/COVESA/dlt-daemon/pull/915
+
+dlt_free() held dlt_mutex while calling dlt_stop_threads(), but the
+housekeeper thread needs dlt_mutex. pthread_mutex_lock is not a
+cancellation point, so pthread_join in dlt_stop_threads() waits forever.
+Applications that exit right after logging hang in the atexit handler.
+Affects v2.18.11 and v3.0.0, the fix is not released yet.
+
+The remaining parts of the upstream commit (MSYS2/MinGW support,
+cooperative exit flag) do not apply to these releases unchanged and are
+not needed to fix the deadlock on Linux.
+
+diff --git a/src/lib/dlt_user.c b/src/lib/dlt_user.c
+index b1281f4..cca8374 100644
+--- a/src/lib/dlt_user.c
++++ b/src/lib/dlt_user.c
+@@ -1112,10 +1112,21 @@ DltReturnValue dlt_free(void)
+         return DLT_RETURN_ERROR;
+     }
+ 
+-    dlt_mutex_lock();
+-
++    /*
++     * Stop threads before locking dlt_mutex. The housekeeper thread
++     * acquires dlt_mutex internally (e.g. in dlt_user_log_check_user_message).
++     * If we hold dlt_mutex here, the housekeeper blocks on it and
++     * pthread_cancel cannot interrupt a mutex lock (not a cancellation
++     * point), causing a deadlock in pthread_join.
++     *
++     * dlt_user_freeing is already set to 1 above, so concurrent
++     * dlt_init() calls will return DLT_RETURN_LOGGING_DISABLED until
++     * dlt_free() finishes and resets it to 0.
++     */
+     dlt_stop_threads();
+ 
++    dlt_mutex_lock();
++
+     dlt_user_init_state = INIT_UNITIALIZED;
+ 
+ #ifdef DLT_LIB_USE_FIFO_IPC

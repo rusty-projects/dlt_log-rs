@@ -36,13 +36,23 @@ CI tests this crate against the following versions of [dlt-daemon](https://githu
 | DLT version | Tested in CI |
 |-------------|--------------|
 | v2.18.9     | ✅ |
-| v2.18.10    | ✅ |
-| v2.18.11    | ✅ |
-| v3.0.0      | ✅ |
-| `master`    | nightly, to detect upcoming changes |
+| v2.18.10    | ✅ (also as Ubuntu 24.04 package) |
+| v2.18.11    | ✅ with [deadlock fix](#deadlock-at-exit-in-dlt-v21811-and-v300) |
+| v3.0.0      | ✅ with [deadlock fix](#deadlock-at-exit-in-dlt-v21811-and-v300) |
+| `master`    | nightly, to detect upcoming changes; not a supported version and not part of the badge |
 
 Version 3 of the DLT library is not binary compatible with version 2.
 Rebuild your application when you switch between them; the bindings are then generated from the new headers.
+
+#### Deadlock at exit in DLT v2.18.11 and v3.0.0
+
+The DLT library of v2.18.11 and v3.0.0 can hang when the application exits, independent of this crate.
+`dlt_free()`, which the DLT library registers to run at exit, waits for its housekeeper thread while holding a mutex that this thread needs.
+Applications that exit shortly after logging are affected most: with v2.18.11 nearly always, with v3.0.0 occasionally.
+
+The bug is fixed upstream in [dlt-daemon PR #915](https://github.com/COVESA/dlt-daemon/pull/915), which is not part of a release yet.
+CI tests these versions with the relevant part of the fix applied, see [`scripts/patches/dlt-daemon-free-deadlock.patch`](https://github.com/rusty-projects/dlt_log-rs/blob/main/scripts/patches/dlt-daemon-free-deadlock.patch).
+If you use one of these versions, apply the fix to your DLT library as well.
 
 ## Example usage
 
