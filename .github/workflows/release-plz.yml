@@ -14,6 +14,7 @@ jobs:
   # Release unpublished packages.
   release-plz-release:
     name: Release-plz release
+    if: github.repository == 'rusty-projects/dlt_log-rs' # do not release from forks
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -23,6 +24,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -37,6 +39,7 @@ jobs:
   # Create a PR with the new versions and changelog, preparing the next release.
   release-plz-pr:
     name: Release-plz PR
+    if: github.repository == 'rusty-projects/dlt_log-rs' # do not release from forks
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -49,6 +52,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
