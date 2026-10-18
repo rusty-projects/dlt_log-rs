@@ -9,7 +9,9 @@ fn log_test_nulerror() {
     // no panic when providing invalid c-string, NUL byte is escaped
     let x: [u8; 5] = [0, b'T', b'E', b'S', b'T'];
     let str_with_null: &str = std::str::from_utf8(&x).unwrap();
-    log::info!("before {} after", str_with_null);
+    // unique marker, so that messages of previous runs do not match
+    let marker = std::process::id();
+    log::info!("before {} after {}", str_with_null, marker);
 
     // get data
     let dlt_receive = Command::new("timeout")
@@ -23,10 +25,9 @@ fn log_test_nulerror() {
     // dlt running?
     if !String::from_utf8_lossy(&dlt_receive.stderr).contains("failed to connect") {
         let stdout = String::from_utf8_lossy(&dlt_receive.stdout);
+        let pattern = format!(r"\] before \\0TEST after {}\]", marker);
         assert!(
-            Regex::new(r"\] before \\0TEST after\]")
-                .unwrap()
-                .is_match(&stdout),
+            Regex::new(&pattern).unwrap().is_match(&stdout),
             "escaped message not found in stdout"
         );
     }
