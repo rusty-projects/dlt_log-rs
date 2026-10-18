@@ -1,60 +1,15 @@
 # log adapter for DLT
 
-This crate is a [`log`](https://docs.rs/log) adapter for integrating with the Diagnostic Log and Trace (DLT) system.
-
-It provides functionality to register applications and contexts with the DLT daemon and implements a logger that sends log messages to the DLT system.
-The library is designed to be used with the standard [`log`](https://docs.rs/log) crate, which provides a flexible logging API for Rust applications.
-
-The DLT system is a flexible and scalable logging framework that is widely used in the automotive industry for logging and tracing in embedded systems.
-It provides features such as log level filtering, message formatting, and log message buffering.
-For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
-
 [![Build status](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rusty-projects/dlt_log-rs/actions)
 [![DLT compatibility](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/dlt-versions.yml/badge.svg?branch=main)](https://github.com/rusty-projects/dlt_log-rs/actions/workflows/dlt-versions.yml)
 [![Crates.io](https://img.shields.io/crates/v/dlt_log.svg)](https://crates.io/crates/dlt_log)
 [![Documentation](https://docs.rs/dlt_log/badge.svg)](https://docs.rs/dlt_log)
 
-## Dependencies
-At least rust version 1.82 is required to build this crate.
-This is caused by latest `bindgen` version which is not compatible with older rust versions, see [bindgen issue #3052](https://github.com/rust-lang/rust-bindgen/issues/3052).
+This crate is a [`log`](https://docs.rs/log) adapter for the Diagnostic Log and Trace (DLT) system, which is widely used in the automotive industry for logging and tracing in embedded systems.
+It registers your application and context with the DLT daemon and sends the messages of the `log` macros to DLT.
+For more information about DLT, see the [DLT project on GitHub](https://github.com/COVESA/dlt-daemon).
 
-You need to have `libclang-dev` installed on your system to run the binding generation and `libdlt-dev` to link against the DLT library.
-On Ubuntu, you can install that with the following command:
-
-```bash
-sudo apt-get install libclang-dev libdlt-dev
-```
-
-The integration with the DLT system is achieved through the underlying C library for DLT.
-[`bindgen`](https://docs.rs/bindgen) is used to generate the FFI (Foreign Function Interface) bindings.
-The bindings are generated during the build process in order to ensure that the Rust code remains in sync with the system’s DLT library.
-
-### Supported DLT versions
-
-CI tests this crate against the following versions of [dlt-daemon](https://github.com/COVESA/dlt-daemon), using the library, the daemon and `dlt-receive` of the same version:
-
-| DLT version | Tested in CI |
-|-------------|--------------|
-| v2.18.9     | ✅ |
-| v2.18.10    | ✅ (also as Ubuntu 24.04 package) |
-| v2.18.11    | ✅ with [deadlock fix](#deadlock-at-exit-in-dlt-v21811-and-v300) |
-| v3.0.0      | ✅ with [deadlock fix](#deadlock-at-exit-in-dlt-v21811-and-v300) |
-| `master`    | nightly, to detect upcoming changes; not a supported version and not part of the badge |
-
-Version 3 of the DLT library is not binary compatible with version 2.
-Rebuild your application when you switch between them; the bindings are then generated from the new headers.
-
-#### Deadlock at exit in DLT v2.18.11 and v3.0.0
-
-The DLT library of v2.18.11 and v3.0.0 can hang when the application exits, independent of this crate.
-`dlt_free()`, which the DLT library registers to run at exit, waits for its housekeeper thread while holding a mutex that this thread needs.
-Applications that exit shortly after logging are affected most: with v2.18.11 nearly always, with v3.0.0 occasionally.
-
-The bug is fixed upstream in [dlt-daemon PR #915](https://github.com/COVESA/dlt-daemon/pull/915), which is not part of a release yet.
-CI tests these versions with the relevant part of the fix applied, see [`scripts/patches/dlt-daemon-free-deadlock.patch`](https://github.com/rusty-projects/dlt_log-rs/blob/main/scripts/patches/dlt-daemon-free-deadlock.patch).
-If you use one of these versions, apply the fix to your DLT library as well.
-
-## Example usage
+## Usage
 
 Add the `dlt_log` crate to your `Cargo.toml`:
 
@@ -64,8 +19,7 @@ log = { version = "0.4", features = ["std"] }
 dlt_log = "1"
 ```
 
-To use this library, you need to initialize it with your application and context information.
-This will register your application and context with the DLT daemon and set up the logger.
+Initialize it once with your application and context information, then use the `log` macros:
 
 ```rust
 fn main() {
@@ -79,15 +33,45 @@ fn main() {
 }
 ```
 
+The build needs `libclang-dev` for the binding generation and `libdlt-dev` to link against the DLT library, see [Build requirements](#build-requirements).
+
+## Viewing logs
+
 Connect the DLT viewer to the DLT daemon to view the log messages.
-The default log level is set to `info`, so only log messages with a level of `info` or higher will be displayed.
-See the [Log levels](#log-levels) section for more information on how to configure the log levels.
 
 ![Example logs in DLT viewer](https://raw.githubusercontent.com/rusty-projects/dlt_log-rs/main/doc/dlt-viewer-example.png)
 
-## Example for cross-compilation
+Log levels and logging backend are configured by the DLT system, see the [DLT documentation](https://github.com/COVESA/dlt-daemon/blob/master/doc/dlt_for_developers.md).
+The default log level is `info`, so only messages with level `info` or higher are logged.
+For example, to enable all log levels, set the `DLT_INITIAL_LOG_LEVEL` environment variable to `::6`.
+To print the messages to the console in addition, set `DLT_LOCAL_PRINT_MODE` to `FORCE_ON`:
 
-As an example for cross-compilation, assume a yocto SDK is installed at `/opt/poky/5.1.2` for aarch64 architecture that includes the DLT library:
+```bash
+DLT_LOCAL_PRINT_MODE=FORCE_ON DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple
+```
+
+```text
+2025/12/11 18:13:51.456738   57739781 000 ECU1 TEST EXPL log verbose V 1 [[simple.rs:5] Tracing the untraceable!]
+2025/12/11 18:13:51.456809   57739782 001 ECU1 TEST EXPL log debug V 1 [[simple.rs:6] Debugging the debugger!]
+2025/12/11 18:13:51.456888   57739783 002 ECU1 TEST EXPL log info V 1 [[simple.rs:7] Information overload: 2 + 2 = 4]
+2025/12/11 18:13:51.456931   57739783 003 ECU1 TEST EXPL log warn V 1 [[simple.rs:8] Warning: Low on coffee!]
+2025/12/11 18:13:51.456989   57739784 004 ECU1 TEST EXPL log error V 1 [[simple.rs:9] Error: Something went terribly right!]
+```
+
+## Build requirements
+
+At least Rust 1.82 is required, as the latest `bindgen` does not support older versions, see [bindgen issue #3052](https://github.com/rust-lang/rust-bindgen/issues/3052).
+
+[`bindgen`](https://docs.rs/bindgen) generates the FFI bindings to the DLT C library during the build, so that they match the headers of your DLT library.
+It needs `libclang-dev`, and linking needs `libdlt-dev`. On Ubuntu:
+
+```bash
+sudo apt-get install libclang-dev libdlt-dev
+```
+
+### Cross-compilation
+
+As an example, assume a yocto SDK for aarch64 that includes the DLT library is installed at `/opt/poky/5.1.2`:
 - `/opt/poky/5.1.2/environment-setup-cortexa57-poky-linux`
 - `/opt/poky/5.1.2/sysroots/cortexa57-poky-linux/usr/lib/libdlt.so`
 - `/opt/poky/5.1.2/sysroots/cortexa57-poky-linux/usr/include/dlt/dlt.h`
@@ -102,43 +86,31 @@ rustflags = [
 ]
 ```
 
-Bindgen needs to know the sysroot path to find the DLT headers, so set the `BINDGEN_EXTRA_CLANG_ARGS` environment variable before building the project:
+Bindgen needs the sysroot to find the DLT headers, so set `BINDGEN_EXTRA_CLANG_ARGS` before building:
 
 ```bash
 export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=/opt/poky/5.1.2/sysroots/cortexa57-poky-linux"
 cargo build --release --target aarch64-unknown-linux-gnu
 ```
 
-## Log levels
+## Supported DLT versions
 
-The log levels and logging backend are configured by the DLT system.
-For configuration, follow the [DLT documentation](https://github.com/COVESA/dlt-daemon/blob/master/doc/dlt_for_developers.md).
+CI tests this crate against these versions of [dlt-daemon](https://github.com/COVESA/dlt-daemon), using library, daemon and `dlt-receive` of the same version:
 
-For example, to enable all log levels, set the `DLT_INITIAL_LOG_LEVEL` environment variable to `::6`.
+| DLT version | Notes |
+|-------------|-------|
+| v2.18.9     | |
+| v2.18.10    | also tested as Ubuntu 24.04 package |
+| v2.18.11    | tested with deadlock fix, see below |
+| v3.0.0      | tested with deadlock fix, see below |
 
-```bash
-DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple
-```
+`master` is tested nightly to detect upcoming changes; it is not a supported version and not part of the badge.
+Version 3 of the DLT library is not binary compatible with version 2, so rebuild your application when you switch.
 
-## Logging to console
-
-By default, the log messages are sent to the DLT daemon.
-To view the logs, you can use the DLT viewer tool provided by the DLT daemon.
-The logs can also be redirected to the console by setting the `DLT_LOCAL_PRINT_MODE` environment variable to `FORCE_ON`.
-
-```bash
-DLT_LOCAL_PRINT_MODE=FORCE_ON DLT_INITIAL_LOG_LEVEL="::6" cargo run --example simple
-```
-
-The output will look like this:
-
-```text
-2025/12/11 18:13:51.456738   57739781 000 ECU1 TEST EXPL log verbose V 1 [[simple.rs:5] Tracing the untraceable!]
-2025/12/11 18:13:51.456809   57739782 001 ECU1 TEST EXPL log debug V 1 [[simple.rs:6] Debugging the debugger!]
-2025/12/11 18:13:51.456888   57739783 002 ECU1 TEST EXPL log info V 1 [[simple.rs:7] Information overload: 2 + 2 = 4]
-2025/12/11 18:13:51.456931   57739783 003 ECU1 TEST EXPL log warn V 1 [[simple.rs:8] Warning: Low on coffee!]
-2025/12/11 18:13:51.456989   57739784 004 ECU1 TEST EXPL log error V 1 [[simple.rs:9] Error: Something went terribly right!]
-```
+The DLT library of v2.18.11 and v3.0.0 can hang when the application exits, independent of this crate: its exit handler `dlt_free()` deadlocks with its housekeeper thread.
+Applications that exit shortly after logging are affected most, with v2.18.11 nearly always.
+The bug is fixed upstream in [dlt-daemon PR #915](https://github.com/COVESA/dlt-daemon/pull/915), which is not released yet.
+CI applies the relevant part of the fix, [`dlt-daemon-free-deadlock.patch`](https://github.com/rusty-projects/dlt_log-rs/blob/main/scripts/patches/dlt-daemon-free-deadlock.patch); apply it to your DLT library as well if you use one of these versions.
 
 ## Logging untrusted data
 
@@ -173,9 +145,9 @@ for (i, chunk) in data.as_bytes().chunks(1000).enumerate() {
 
 ## Errors
 
-The library defines an [`InitializeError`] enum to represent possible errors that can occur during initialization.
-These include conversion errors, logger errors, and DLT library errors.
+[`init`] returns an [`InitializeError`] if the initialization fails, because a parameter contains a NUL byte, another logger is set already, or the DLT library returns an error.
 
+[`init`]: https://docs.rs/dlt_log/latest/dlt_log/fn.init.html
 [`InitializeError`]: https://docs.rs/dlt_log/latest/dlt_log/enum.InitializeError.html
 
 ## License
