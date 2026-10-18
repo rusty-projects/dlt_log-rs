@@ -124,6 +124,23 @@ let user_input = "name\x1b[2K\x1b[1Gfaked content";
 log::info!("User name: {:?}", user_input);
 ```
 
+# Message length limit
+
+DLT limits the size of a log message payload, by default to 1390 bytes (`DLT_USER_BUF_MAX_SIZE`).
+The limit applies to the complete payload, which also contains the `[file:line] ` prefix added by this crate and a few bytes of DLT argument header.
+Longer messages are truncated by the DLT library, which appends `... <<Message truncated, too long>>`.
+The full message is still formatted before it is truncated.
+
+The limit can be changed with the `DLT_LOG_MSG_BUF_LEN` environment variable, e.g. `DLT_LOG_MSG_BUF_LEN=4096`.
+To log large data reliably, split it into several log messages, e.g. for ASCII data:
+
+```rust
+let data = "x".repeat(5000);
+for (i, chunk) in data.as_bytes().chunks(1000).enumerate() {
+    log::info!("data part {}: {}", i, String::from_utf8_lossy(chunk));
+}
+```
+
 # Errors
 
 The library defines an [`InitializeError`] enum to represent possible errors that can occur during initialization.
