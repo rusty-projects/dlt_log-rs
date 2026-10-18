@@ -38,6 +38,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Code Coverage
 - **Coverage report**: `./scripts/coverage.sh` (uses `cargo llvm-cov`, fails if functions, lines or regions are below 100%)
+- Unit tests and integration tests use separate builds of `src/lib.rs`. Coverage of a function is taken from the better of the two builds, not merged, so cover all paths of a function in either unit tests or integration tests.
 
 ### Complete CI Validation
 - **Full CI**: `./scripts/ci.sh`
