@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2](https://github.com/rusty-projects/dlt_log-rs/compare/v1.1.1...v1.1.2) - 2026-11-12
+
+### Other
+
+- *(deps)* Bump the "devcontainer" group with 1 update across multiple ecosystems ([#170](https://github.com/rusty-projects/dlt_log-rs/pull/170))
+- *(deps)* Bump virtualenv from 21.14.7 to 21.14.13 in /.devcontainer ([#171](https://github.com/rusty-projects/dlt_log-rs/pull/171))
+- *(deps)* Bump filelock from 4.1.1 to 4.2.1 in /.devcontainer ([#172](https://github.com/rusty-projects/dlt_log-rs/pull/172))
+- *(deps)* Bump release-plz/action from 0.5.142 to 0.5.146 in the github-actions group ([#173](https://github.com/rusty-projects/dlt_log-rs/pull/173))
+
 ## [1.1.1](https://github.com/rusty-projects/dlt_log-rs/compare/v1.1.0...v1.1.1) - 2026-10-18
 
 ### Other
