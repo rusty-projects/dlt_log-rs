@@ -1,5 +1,5 @@
 # base image pinned by digest, updated by dependabot
-FROM mcr.microsoft.com/devcontainers/base:noble@sha256:21e9e3275736cb3bc33a2904b279a2ab292c51fedd53c2963463627d4586c3e6
+FROM mcr.microsoft.com/devcontainers/base:noble@sha256:48be4adec1c1ecbe030064700aef85382f5205786a8f82937fc44a7473717eae
 
 # mount points for the Claude Code and GitHub CLI config volumes (see
 # devcontainer.json), created here so fresh volumes are owned by vscode
